@@ -62,4 +62,16 @@ And, we want to insert a new section after @code{@@1.0}. In other numbered docum
 
 If we want to insert anything between @code{@@1.0} and @code{@@1.1} then it could be @code{@@1.01} and a new tag between @code{@@1.1} and @code{@@2.0} could be @code{@@1.2}. Note that a tag can be any number that isn't already taken. Since we are using floating point numbers, we theoretically have infinite possibilities to choose from.
 
+@node Tagline
+@section Tagline
+
+The line that tags a section and has the tag number, title of the section, section's references, and section's flags is called tagline. It starts with @code{@@} followed by the tag number, title, references, and flags.
+
+Example of a tagline:
+@example
+@@1.5 Butterflies _ @@1.2 ^ incomplete
+@end example
+
+This line states that the section tag is @code{@@1.5}, followed by the section title "Butterflies", references section @code{@@1.2}, and it has the flag @code{incomplete} which denotes that the section isn't finished yet. The @code{_} (sub) and @code{^} (sup) signs are respectively used for reference lists and flag lists.
+
 @bye
