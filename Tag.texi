@@ -21,4 +21,12 @@ This manual is for Tag version 0.1.
 Tag is an editor independent plain text document format that uses floating point number to index its sections. Tag aims to be efficient, minimal, and predictable. Tagfiles can be used for personal note taking, academic writing, literate programming, todo lists, configuration files, documentation, and any sorted and permenantly indexed plain text data.
 
 @insertcopying
+
+@menu
+* Introduction::                        Introduction to the core philosophy of Tags
+@end menu
+
+@node Introduction
+@chapter Introduction
+
 @bye
