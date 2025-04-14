@@ -29,4 +29,11 @@ Tag is an editor independent plain text document format that uses floating point
 @node Introduction
 @chapter Introduction
 
+@node Why a new document format?
+@section Why a new document format?
+
+We already have a lot of plain text document formats and some of them are great at what they do but they all have terrible referencig system and poor scaling. Most plain text document formats use "headlines" (or "heading") as their section title and the sections are later referenced with that title. But, Searching such headline is tiresome for both computers and humans alike. One will have to search through the whole document until they find the the referenced section. This means the longer your document is, the more time it'll take for you to find your desired section.
+
+This is terrible if you want to quickly scrape a section from your long plain text file (for example, if you want to make a todo list out of your plain text document and you want to check whether one item is done or not or if you want to read your 22nd September journal entry from 3 years ago but you have a really long list). Furthermore, there can be more than one section with the same headline title. This will create confusion. To fix these issues Tag uses something similar to Niklas Luhmann's Zettlekasten method. Tag marks each section with a permenant number (tag) and sorts the sections by tag number.
+
 @bye
