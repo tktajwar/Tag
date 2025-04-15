@@ -98,4 +98,17 @@ Leading zeros may be ignored but it is adviced against unless it's right before 
 
 A tag number under the hood is implemented with a string mantissa and an integer exponent. This is similar to how floats and doubles are implemented. This custom data type is chosen over float/double for precision and infinite range.
 
+@node Title
+@section Title
+
+A section or any other element can be given a title. For sections, the title is one word or multiple words inside curly braces that comes after the tagstring.
+
+Examples:
+@example
+@@1.0 Title
+@@2.0 @{Longer Title@}
+@end example
+
+A section must not be referenced using its title. The tagstring should be used instead. The title of a section can be used for description and exporting. Elements other than sections, such as files and variables, can be referred using their title.
+
 @bye
