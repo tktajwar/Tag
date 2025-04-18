@@ -146,4 +146,38 @@ Example of referencing a section from another Tag file:
 @@1.2 @{Why Tagging System@} _ @{./Notes.tag::@@1.0@}
 @end example
 
+@node Flags
+@section Flags
+
+Flags are words or labels used to convey the quality or features of a Tag element. For example, a section can have the ``ARCHIVED'' flag indicating that the section is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the caret sign @code{^}. If the reference list is absent, flag list can start right after the title. Flags are case sensitive.
+
+Example of flag used to convey a section needs more work:
+@example
+@@3.75 @{Faith and Humanity@} _ @@2.59 ^ incomplete
+@end example
+
+Example of flag used to archive a section:
+@example
+@@5.1 Drilldozer _ @@1.0 ^ ARCHIVED
+@end example
+
+Todo flags can be also used to turn a section into a todo item. ``TODO'' and ``DONE'' are the two basic todo states but more can be used.
+
+Example of flags used to make a todo list:
+@example
+@@td.01 @{Finish section: attributes@} ^ TODO
+@@td.02 @{Write about biggest overcomes@} ^ DONE
+@@td.31 @{Share Tag with others@} ^ @{TODO, IMPORTANT@}
+@end example
+
+Some flags have parameter. For example, "MOVED-TO" flag will need an argument tagstring to indicate its new location.
+
+Example of flag used to indicate a tag has been moved:
+@example
+@@1.75 ^ MOVED-TO=@@5.0
+@@5.0 Ingenuity
+@end example
+
+Flags aren't just labels you use to tell Tag compiler how you want your element to be treated. Flags can be words you use to describe a tag element. If a flag is foreign to the compiler, it will ignore it.
+
 @bye
