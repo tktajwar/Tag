@@ -3,6 +3,15 @@
 
 @copying
 Copyright @copyright{} 2025 Sayed Takey Tajwar Arko.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
+@end quotation
 @end copying
 
 @titlepage
@@ -24,6 +33,8 @@ Tag is an editor independent plain text document format that uses floating point
 
 @menu
 * Introduction::                        Introduction to the core philosophy of Tags
+
+* GNU Free Documentation License::      Copying and sharing this documentation.
 @end menu
 
 @node Introduction
@@ -179,5 +190,10 @@ Example of flag used to indicate a tag has been moved:
 @end example
 
 Flags aren't just labels you use to tell Tag compiler how you want your element to be treated. Flags can be words you use to describe a tag element. If a flag is foreign to the compiler, it will ignore it.
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl-1.3.texi
 
 @bye
