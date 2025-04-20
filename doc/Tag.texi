@@ -1,7 +1,11 @@
 \input texinfo
 @settitle Tag Manual
 
+@include version.texi
+
 @copying
+This manual is for Tag version @value{VERSION}.
+
 Copyright @copyright{} 2025 Sayed Takey Tajwar Arko.
 
 @quotation
@@ -24,8 +28,6 @@ Texts.  A copy of the license is included in the section entitled
 
 @node Top
 @top The Tag Manual
-
-This manual is for Tag version 0.1.
 
 Tag is an editor independent plain text document format that uses floating point number to index its sections. Tag aims to be efficient, minimal, and predictable. Tagfiles can be used for personal note taking, academic writing, literate programming, todo lists, configuration files, documentation, and any sorted and permenantly indexed plain text data.
 
