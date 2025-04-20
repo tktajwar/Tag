@@ -193,6 +193,46 @@ Example of flag used to indicate a tag has been moved:
 
 Flags aren't just labels you use to tell Tag compiler how you want your element to be treated. Flags can be words you use to describe a tag element. If a flag is foreign to the compiler, it will ignore it.
 
+@node Contents
+@section Contents
+
+A section content is the body of the section. Contents may contain paragraphs, comments, metadata, etc. The content of a section starts right after the tagline and ends right before the next section's tagline or EOF.
+
+Example of a section with content:
+@example
+@@1.92 Title
+
+This is the contents of section @@1.92 titled "Title".
+@end example
+
+Example of a section with multiple paragraph content:
+@example
+@@0.9A @{Multi-paragraph contents@}
+
+It is possible for a section to have multiple paragraphs.
+
+In that case they can be separated by blanklines.
+
+Blanklines can also be used between taglines for clarity and readability.
+@end example
+
+Example of two secions with contents:
+@example
+@@1.0 First
+
+This is the content of section @@1.0.
+
+@@2.0 Second
+
+This is the content of section @@2.0.
+@end example
+
+Example of two sections without contents:
+@example
+@@1.0 First
+@@2.0 Second
+@end example
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
