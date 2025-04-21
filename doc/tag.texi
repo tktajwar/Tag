@@ -233,6 +233,73 @@ Example of two sections without contents:
 @@2.0 Second
 @end example
 
+@node Metadata
+@section Metadata
+
+Metadata are data about data. Metadata are useful when you need to provide information regarding certain data and how they should be processed. In Tag, metadata are used to tell the compiler how to process the data and provide context for human reader. Metadata resides in the content of a section and uses @code{::KEY:VALUE} format.
+
+Example of metadata used to indicate creation and modification times:
+@example
+@@1.1 @{Section with creation time@}
+::BIRTH: [2025-04-21T02:18:17+06:00]
+::MODIFIED: [2025-04-21T21:44:52+06:00]
+
+This section was created on 21st April 2025 at 2:18 and was
+last modified on 21st April 2025 at 21:44 (UTC+06:00).
+@end example
+
+Example of metadata used to schedule a task:
+@example
+@@9.47 @{Watch Le Trou (1960)@} ^ TODO
+::SCHEDULED: <2025-06-01T18:00/PT2H20M>
+@end example
+
+Metadata entries can be situated at the beginning of the document and not be part of any section. This type of metadata can tell the compiler how to process the whole document and also the viewer information about the whole documents.
+
+Example of metadata used to provide descriptive information:
+@example
+::TITLE: Metadata is amazing!
+::AUTHOR: One who loves metadata
+
+@@1.0 @{What is metadata@}
+@@2.0 @{Why we need metadata@} ^ @@1.0
+@end example
+
+For some metadata a single line isn't enough. For such, we need metadata drawer. A metadata drawer is essentially a metadata set or schema. A metadata drawer starts with @code{:::DRAWER-NAME} and ends with @code{:::DRAWER-NAME}.
+
+Example of drawer used to keep log of all the changes of a section:
+@example
+@@4.7g2 @{Frequently changing section@}
+:::LOGS
+::MODIFIED: [2025-04-21T12:10:23Z]
+::MODIFIED: [2025-04-21T12:05:47Z]
+::MODIFIED: [2025-04-21T12:00:32Z]
+::BIRTH: [2025-04-21T12:00:00Z]
+:::LOGS
+
+I last updated this section on 21st April 2025 at 12:10:23!
+@end example
+
+Example of drawer used to keep the reference list of a section:
+@example
+@@2.15t @{Referencing is important!@} ^ markup
+
+It is very important to reference what you cite. So, it is *important
+to keep a list of all the references so you don't forget*.
+
+Let's imagine that in this section we are citing the work of two imaginary
+people Ivanka Ivanwich and Josephine Vargas. Ivanwish (1998) argues that
+referencing is important for solely legality but Vargas (2003) points out
+that there are other reasons referencing is important.
+
+:::REFERENCES
+Ivanka, I. (1998). /Laws and Library/. Damir Publishing.
+Vargas, J. (2003). /Art of Academia/. Alba Arts.
+:::REFERENCES
+@end example
+
+Feel free to make your own metadata for clarity and extension. A metadata key that is foreign to the compiler will be ignored.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
