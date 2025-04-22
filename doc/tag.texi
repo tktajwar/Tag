@@ -317,6 +317,42 @@ beginning of the commented tagline.
 :::WARNING
 @end example
 
+@node Markup
+@section Markup
+
+Tag supports markup for rich formatting. Markup allows you to indicate how your plain text document should be displayed and exported. To enable markup in a section, you will need to add @code{MARKUP} flag in that section. Once enabled, you'll need to surround the block of text you'd like to be marked up in special symbols. For example, to emphasis your text:
+
+@example
+@@10.37 @{Text Emphasis@} ^ MARKUP
+You can *bold*, /italicize/, _underline_,
++strike-through+, #highlight#, and ~code~ your text.
+The special symbols will have to surround your
+desired text and not be inbetween alphanumeric symbols.
+@end example
+
+@noindent You can also insert links in your document by surrounding them inside square brackets. For example:
+
+@example
+@@10.38 @{Links and URLs@} ^ MARKUP
+You can insert a link like [[https://example.com]].
+If you'd like to provide description with your
+link, you can use [[Link][Description]] format
+like [[https://example.com][Example site]].
+You can also link other files, using aboslute
+or relative path, like [[./file.tag]].
+@end example
+
+@noindent You can also add inline math with @code{$} symbol. You'll need to use the @code{TeX} flag for this one to work. For example:
+
+@example
+@@10.57 @{Inline Math@} ^ TeX
+$(x+y)^2 = x^2 + 2xy + y^2$
+@end example
+
+You might need to install a TeX engine for this to work.
+
+@noindent Tag's markup language was mostly inspired by Org mode's. However, Tag supports some markups that Org doesn't and doesn't provide support for verbatim monospacing as it's unnecessary when there's code present.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
