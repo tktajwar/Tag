@@ -52,9 +52,7 @@ This is terrible if you want to quickly scrape a section from your long plain te
 @node How Tag works
 @section How Tag works
 
-If we tag our sections with permanent floating point numbers (for example: @code{9.0}) and sort the sections based on those tags, we'll have a plain text document format that's quick to look up and since the sections are permanently tagged, we can use that to reference in other sections. The reason for choosing floating point numbers for tagging is we want to be able to insert a new tag between two old tags without having to change the value of any old tag.
-
-For example, let's say we have four sections: @code{@@1.0, @@2.0, @@3.0, @@4.0}.
+If we tag our sections with permanent floating point numbers (for example: @code{9.0}) and sort the sections based on those tags, we'll have a plain text document format that's quick to look up and since the sections are permanently tagged, we can use that to reference in other sections. The reason for choosing floating point numbers for tagging is we want to be able to insert a new tag between two old tags without having to change the value of any old tag. For example, let's say we have four sections: @code{@@1.0, @@2.0, @@3.0, @@4.0}.
 
 @example
 @@1.0
@@ -63,7 +61,7 @@ For example, let's say we have four sections: @code{@@1.0, @@2.0, @@3.0, @@4.0}.
 @@4.0
 @end example
 
-And, we want to insert a new section after @code{@@1.0}. In other numbered document files we'd have to name the new section the new @code{@@2.0} and the old @code{@@2.0} would be the new @code{@@3.0}... But, if we change the already assigned tag numbers, we will would lose the purpose of referencing sections with their respective tag numbers. What we do here is tag the new section a number between @code{@@1.0} and @code{@@2.0}. @code{@@1.1} would suffice here. So, the five sections are @code{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0}. @code{@@1.1} is between @code{@@1.0} and @code{@@2.0} and no section had to change its tag.
+@noindent And, we want to insert a new section after @code{@@1.0}. In other numbered document files we'd have to name the new section the new @code{@@2.0} and the old @code{@@2.0} would be the new @code{@@3.0}... But, if we change the already assigned tag numbers, we will would lose the purpose of referencing sections with their respective tag numbers. What we do here is tag the new section a number between @code{@@1.0} and @code{@@2.0}. @code{@@1.1} would suffice here. So, the five sections are @code{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0}. @code{@@1.1} is between @code{@@1.0} and @code{@@2.0} and no section had to change its tag.
 
 @example
 @@1.0
@@ -73,14 +71,13 @@ And, we want to insert a new section after @code{@@1.0}. In other numbered docum
 @@4.0
 @end example
 
-If we want to insert anything between @code{@@1.0} and @code{@@1.1} then it could be @code{@@1.01} and a new tag between @code{@@1.1} and @code{@@2.0} could be @code{@@1.2}. Note that a tag can be any number that isn't already taken. Since we are using floating point numbers, we theoretically have infinite possibilities to choose from.
+@noindent If we want to insert anything between @code{@@1.0} and @code{@@1.1} then it could be @code{@@1.01} and a new tag between @code{@@1.1} and @code{@@2.0} could be @code{@@1.2}. Note that a tag can be any number that isn't already taken. Since we are using floating point numbers, we theoretically have infinite possibilities to choose from.
 
 @node Tagline
 @section Tagline
 
-The line that tags a section and has the tag number, title of the section, section's references, and section's flags is called tagline. It starts with @code{@@} followed by the tag number, title, references, and flags.
+The line that tags a section and has the tag number, title of the section, section's references, and section's flags is called tagline. It starts with @code{@@} followed by the tag number, title, references, and flags. Example of a tagline:
 
-Example of a tagline:
 @example
 @@1.5 Butterflies _ @@1.2 ^ incomplete
 @end example
@@ -114,32 +111,28 @@ A tag number under the hood is implemented with a string mantissa and an integer
 @node Title
 @section Title
 
-A section or any other element can be given a title. For sections, the title is one word or multiple words inside curly braces that comes after the tagstring.
+A section or any other element can be given a title. For sections, the title is one word or multiple words inside curly braces that comes after the tagstring. Example of sections with titles:
 
-Examples:
 @example
 @@1.0 Title
 @@2.0 @{Longer Title@}
 @end example
 
-A section must not be referenced using its title. The tagstring should be used instead. The title of a section can be used for description and exporting. Elements other than sections, such as files and variables, can be referred using their title.
+@noindent A section must not be referenced using its title. The tagstring should be used instead. The title of a section can be used for description and exporting. Elements other than sections, such as files and variables, can be referred using their title.
 
 @node References
 @section References
 
-References are important part of the Tag system. Using references we can make connections between two sections. This is useful when you have a section that refers to contents mentioned in another section. Futhermore, referencing allows us to use files and variables from another section and refer to files and variables to reuse them. Reference list comes after the title of a tag element and the underscore symbol @code{_}. If you are referencing only one element then you can write the address (tagstring or title depending on the element type) after the @code{_}. If you are referencing multiple elements then you'll have to put them inside comma separated curly braces.
+References are important part of the Tag system. Using references we can make connections between two sections. This is useful when you have a section that refers to contents mentioned in another section. Futhermore, referencing allows us to use files and variables from another section and refer to files and variables to reuse them. Reference list comes after the title of a tag element and the underscore symbol @code{_}. If you are referencing only one element then you can write the address (tagstring or title depending on the element type) after the @code{_}. For example:
 
-Example of reference used to make connections between two notes:
 @example
 @@1.0 @{Origin of Butterflies@}
-
 ::SOURCE: [[https://pmc.ncbi.nlm.nih.gov/articles/PMC10250192/]]
 Butterflies are flying insects from the Lepidoptera
 superfamily. Moleculars evidences suggests that
 butterflies may have originated in the Cretaceous period.
 
 @@2.0 @{Butterflies in Jurrassic Period?@} _ @@1.0
-
 Butterflies likely originated from the Cretaceous
 period, which was 145 to 66 million years ago.
 Jurassic period was 201 and 145 million years ago.
@@ -147,14 +140,13 @@ So, unless there's new evidence, butterflies probably
 didn't exist during the Jurassic period.
 @end example
 
-Example of a section with multiple references:
+@noindent If you are referencing multiple elements then you'll have to put them inside comma separated curly braces. Example:
+
 @example
 @@3.75 World _ @{@@1.2, @@2.8, @@4.5@}
 @end example
 
-You can also refer to sections outside of the current document using either the absolute path or the relative path followed by @code{::} and the tagstring. You can also use a variable to store path to the Tag file beforehand.
-
-Example of referencing a section from another Tag file:
+@noindent You can also refer to sections outside of the current document using either the absolute path or the relative path followed by @code{::} and the tagstring. For example:
 @example
 @@1.2 @{Why Tagging System@} _ @{./Notes.tag::@@1.0@}
 @end example
@@ -162,50 +154,47 @@ Example of referencing a section from another Tag file:
 @node Flags
 @section Flags
 
-Flags are words or labels used to convey the quality or features of a Tag element. For example, a section can have the ``ARCHIVED'' flag indicating that the section is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the caret sign @code{^}. If the reference list is absent, flag list can start right after the title. Flags are case sensitive.
+Flags are words or labels used to convey the quality or features of a Tag element. For example, a section can have the ``ARCHIVED'' flag indicating that the section is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the caret sign @code{^}. If the reference list is absent, flag list can start right after the title. Flags are case sensitive. Here's an example of flag used to convey that a section is still incomplete:
 
-Example of flag used to convey a section needs more work:
 @example
 @@3.75 @{Faith and Humanity@} _ @@2.59 ^ incomplete
 @end example
 
-Example of flag used to archive a section:
+@noindent Flags can be used to convey that a section is now archived. For example:
+
 @example
 @@5.1 Drilldozer _ @@1.0 ^ ARCHIVED
 @end example
 
-Todo flags can be also used to turn a section into a todo item. ``TODO'' and ``DONE'' are the two basic todo states but more can be used.
+@noindent Todo flags can be also used to turn a section into a todo item. ``TODO'' and ``DONE'' are the two basic todo states but more can be used. Examples of sections with todo flags:
 
-Example of flags used to make a todo list:
 @example
 @@td.01 @{Finish section: attributes@} ^ TODO
 @@td.02 @{Write about biggest overcomes@} ^ DONE
 @@td.31 @{Share Tag with others@} ^ @{TODO, IMPORTANT@}
 @end example
 
-Some flags have parameter. For example, "MOVED-TO" flag will need an argument tagstring to indicate its new location.
+@noindent Some flags have parameter. For example, "MOVED-TO" flag will need an argument tagstring to indicate its new location. Example of a flag with argument that indicates the new location of the section:
 
-Example of flag used to indicate a tag has been moved:
 @example
 @@1.75 ^ MOVED-TO=@@5.0
 @@5.0 Ingenuity
 @end example
 
-Flags aren't just labels you use to tell Tag compiler how you want your element to be treated. Flags can be words you use to describe a tag element. If a flag is foreign to the compiler, it will ignore it.
+@noindent Flags aren't just labels you use to tell Tag compiler how you want your element to be treated. Flags can be words you use to describe a tag element. If a flag is foreign to the compiler, it will ignore it.
 
 @node Contents
 @section Contents
 
-A section content is the body of the section. Contents may contain paragraphs, comments, metadata, etc. The content of a section starts right after the tagline and ends right before the next section's tagline or EOF.
+A section content is the body of the section. Contents may contain paragraphs, comments, metadata, etc. The content of a section starts right after the tagline and ends right before the next section's tagline or EOF. Example of a section with content:
 
-Example of a section with content:
 @example
 @@1.92 Title
-
 This is the contents of section @@1.92 titled "Title".
 @end example
 
-Example of a section with multiple paragraph content:
+@noindent Contents can have multiple paragraphs. Each paragraph will have to be separated by at least one blankline. For example:
+
 @example
 @@0.9A @{Multi-paragraph contents@}
 
@@ -216,18 +205,8 @@ In that case they can be separated by blanklines.
 Blanklines can also be used between taglines for clarity and readability.
 @end example
 
-Example of two secions with contents:
-@example
-@@1.0 First
+It is possible for sections to not have any content at all. Example of two sections without contents:
 
-This is the content of section @@1.0.
-
-@@2.0 Second
-
-This is the content of section @@2.0.
-@end example
-
-Example of two sections without contents:
 @example
 @@1.0 First
 @@2.0 Second
@@ -236,38 +215,34 @@ Example of two sections without contents:
 @node Metadata
 @section Metadata
 
-Metadata are data about data. Metadata are useful when you need to provide information regarding certain data and how they should be processed. In Tag, metadata are used to tell the compiler how to process the data and provide context for human reader. Metadata resides in the content of a section and uses @code{::KEY:VALUE} format.
+Metadata are data about data. Metadata are useful when you need to provide information regarding certain data and how they should be processed. In Tag, metadata are used to tell the compiler how to process the data and provide context for human readers. Metadata resides in the content of a section and uses @code{::KEY:VALUE} format. Metadata can be used to indicate creation and modification time. For example:
 
-Example of metadata used to indicate creation and modification times:
 @example
 @@1.1 @{Section with creation time@}
 ::BIRTH: [2025-04-21T02:18:17+06:00]
 ::MODIFIED: [2025-04-21T21:44:52+06:00]
-
 This section was created on 21st April 2025 at 2:18 and was
 last modified on 21st April 2025 at 21:44 (UTC+06:00).
 @end example
 
-Example of metadata used to schedule a task:
+@noindent Metadata can be used to schedule a task. For example:
+
 @example
 @@9.47 @{Watch Le Trou (1960)@} ^ TODO
 ::SCHEDULED: <2025-06-01T18:00/PT2H20M>
 @end example
 
-Metadata entries can be situated at the beginning of the document and not be part of any section. This type of metadata can tell the compiler how to process the whole document and also the viewer information about the whole documents.
+@noindent Metadata entries that are situated at the beginning of the document and not part of any section are document metadata. They can tell the compiler how to process the whole document and also the viewer information about the whole documents. For example, metadata used to provide descriptive information:
 
-Example of metadata used to provide descriptive information:
 @example
 ::TITLE: Metadata is amazing!
 ::AUTHOR: One who loves metadata
-
 @@1.0 @{What is metadata@}
 @@2.0 @{Why we need metadata@} ^ @@1.0
 @end example
 
-For some metadata a single line isn't enough. For such, we need metadata drawer. A metadata drawer is essentially a metadata set or schema. A metadata drawer starts with @code{:::DRAWER-NAME} and ends with @code{:::DRAWER-NAME}.
+@noindent For some metadata a single line isn't enough. For such, we need metadata drawer. A metadata drawer is essentially a metadata set or schema. A metadata drawer starts with @code{:::DRAWER-NAME} and ends with @code{:::DRAWER-NAME}. Example of drawer used to keep log of all the changes of a section:
 
-Example of drawer used to keep log of all the changes of a section:
 @example
 @@4.7g2 @{Frequently changing section@}
 :::LOGS
@@ -276,17 +251,16 @@ Example of drawer used to keep log of all the changes of a section:
 ::MODIFIED: [2025-04-21T12:00:32Z]
 ::BIRTH: [2025-04-21T12:00:00Z]
 :::LOGS
-
 I last updated this section on 21st April 2025 at 12:10:23!
 @end example
 
-Example of drawer used to keep the reference list of a section:
+@noindent Drawers can used to keep a reference list. For example:
+
 @example
 @@2.15t @{Referencing is important!@} ^ markup
 
 It is very important to reference what you cite. So, it is *important
 to keep a list of all the references so you don't forget*.
-
 Let's imagine that in this section we are citing the work of two imaginary
 people Ivanka Ivanwich and Josephine Vargas. Ivanwish (1998) argues that
 referencing is important for solely legality but Vargas (2003) points out
@@ -298,7 +272,7 @@ Vargas, J. (2003). /Art of Academia/. Alba Arts.
 :::REFERENCES
 @end example
 
-Feel free to make your own metadata for clarity and extension. A metadata key that is foreign to the compiler will be ignored.
+@noindent Feel free to make your own metadata for clarity and extension. A metadata key that is foreign to the compiler will be ignored.
 
 @node Comments
 @section Comments
