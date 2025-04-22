@@ -300,6 +300,54 @@ Vargas, J. (2003). /Art of Academia/. Alba Arts.
 
 Feel free to make your own metadata for clarity and extension. A metadata key that is foreign to the compiler will be ignored.
 
+@node Comments
+@section Comments
+
+Comments in Tag are special kind of metadata that can be used for annotation. A single line can be commented using the @code{::COMMENT:} key. For example:
+
+@example
+@@3.63 @{Provoking Thoughts@}
+People of different philosophies have different ideas
+on the origin of our thoughts and consciousness.
+::COMMENT: Thoughts as a form of psychic energy
+Thoughts in spirituality are believed to arise
+from energy and vibration. Many spiritualists
+also believe karma to be a by-product of thoughts.
+@end example
+
+@noindent A multi line comment can reside inside the @code{:::COMMENTS} drawer. For example:
+
+@example
+@@2.33 @{A lot to say@}
+:::COMMENTS
+Sometimes we have a lot to say about something
+that may not fit in one line. In that case,
+we can use the :::COMMENTS drawer.
+:::COMMENTS
+@end example
+
+@noindent If you want your comments to be more cautionary then you can use warnings instead. Warnings are statements that warns the reader. They can can be done with @code{::WARNING:} metadata. For example:
+
+@example
+@@8.95 @{Liquid Methane and Hot Lava Demonstration@}
+Let's find out what happens when hot lava meets liquid nitrogen.
+::WARNING: DON'T TRY THIS AT HOME
+We'll need rocks and enough heat to melt
+them, liquid methane, and proper lab equipments.
+@end example
+
+@noindent Or, with the @code{:::WARNINGS} drawer. For example:
+
+@example
+@@3.423 @{Commenting taglines?@}
+:::WARNINGS
+Avoid putting taglines inside comments.
+The behavior for doing so is undefined.
+If you must, add a blank space at the
+beginning of the commented tagline.
+:::WARNING
+@end example
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
