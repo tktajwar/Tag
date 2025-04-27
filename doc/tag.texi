@@ -99,7 +99,7 @@ A tag section can have parent tag section and the tagstring will be expressed li
 
 There a few rules to choosing a tag number. A tag number must be greater than zero. @code{@@0.0} is not a valid tagstring. A tagstring cannot contain anything other than one @code{@@} in the beginning, letters and digits for mantissa, one radix point @code{.} to separate the whole number from the fraction, and @code{/} seperators to create tags under tags. A tag section cannot have a higher tag number than the tag section after it and a tag section cannot have a lower tag number than the tag section before it. If a tag is inserted between two tags, it must be a number between those two tags.
 
-Leading zeros may be ignored but it is adviced against unless it's right before the radic point @code{.}. Multiple radix points in one tagstring is allowed. It can be used for clarity. All the radix points other than the first one will be ignored. Similar to leading zeros, trailing zeros are also discouraged.
+Leading zeros may be ignored but it is adviced against unless it's right before the radix point @code{.}. Multiple radix points in one tagstring is allowed. It can be used for clarity. All the radix points other than the first one will be ignored. Similar to leading zeros, trailing zeros are also discouraged.
 
 A tag number under the hood is implemented with a string mantissa and an integer exponent. This is similar to how floats and doubles are implemented. This custom data type is chosen over float/double for precision and infinite range.
 
