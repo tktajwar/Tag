@@ -29,7 +29,7 @@ Texts.  A copy of the license is included in the section entitled
 @node Top
 @top The Tag Manual
 
-Tag is an editor independent plain text document format that uses floating point number to index its sections. Tag aims to be efficient, minimal, and predictable. Tagfiles can be used for personal note taking, academic writing, literate programming, todo lists, configuration files, documentation, and any sorted and permenantly indexed plain text data.
+Tag is an editor independent plain text document format that uses floating point numbers to index its sections. Tag aims to be efficient, minimal, and predictable. Tagfiles can be used for personal note taking, academic writing, literate programming, todo lists, configuration files, documentation, and any sorted and permenantly indexed plain text data.
 
 @insertcopying
 
