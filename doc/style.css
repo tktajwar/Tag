@@ -3,6 +3,9 @@ html {
 }
 
 body {
+    max-width: 60em;
     background-color: white;
+    margin: 0 auto;
+    padding: .5em 1em 1em 1em;
     border: .1em solid grey;
 }
