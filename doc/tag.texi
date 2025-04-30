@@ -48,10 +48,10 @@ Tag is designed to be used for organizing your note files, keeping track of your
 
 Tag is largely inspired by Niklas Luhmann's Zettelkasten method.
 
-@node How Tag works
-@section How Tag works
+@node How Tag Numbering works
+@section How Tag Numbering works
 
-If we tag our sections with permanent floating point numbers (for example: @code{9.0}) and sort the sections based on those tags, we'll have a plain text document format that's quick to look up and since the sections are permanently tagged, we can use that to reference in other sections. The reason for choosing floating point numbers for tagging is we want to be able to insert a new tag between two old tags without having to change the value of any old tag. For example, let's say we have four sections: @code{@@1.0, @@2.0, @@3.0, @@4.0}.
+If we permanently tag our items with floating point numbers and sort them by their tag number, we'll have a plain text document format that's quick to look up and easy to refer to. For example, let's say we have four items with the tags @samp{@@1.0, @@2.0, @@3.0, @@4.0}:
 
 @example
 @@1.0
@@ -60,17 +60,19 @@ If we tag our sections with permanent floating point numbers (for example: @code
 @@4.0
 @end example
 
-@noindent And, we want to insert a new section after @code{@@1.0}. In other numbered document files we'd have to name the new section the new @code{@@2.0} and the old @code{@@2.0} would be the new @code{@@3.0}... But, if we change the already assigned tag numbers, we will would lose the purpose of referencing sections with their respective tag numbers. What we do here is tag the new section a number between @code{@@1.0} and @code{@@2.0}. @code{@@1.1} would suffice here. So, the five sections are @code{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0}. @code{@@1.1} is between @code{@@1.0} and @code{@@2.0} and no section had to change its tag.
+@noindent And, we want to insert a new item after @samp{@@1.0} but we don't want to change the tag number of the previous items. What we do here is tag the new item a number between @samp{@@1.0} and @samp{@@2.0} and insert them between those two items. @samp{@@1.1} will suffice here. So, the five sections are @samp{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0} where the new @samp{@@1.1} is between @samp{@@1.0} and @samp{@@2.0}:
 
 @example
 @@1.0
-@@1.1 <-- the newly inserted tag
+@@1.1 <-- the newly inserted item
 @@2.0
 @@3.0
 @@4.0
 @end example
 
-@noindent If we want to insert anything between @code{@@1.0} and @code{@@1.1} then it could be @code{@@1.01} and a new tag between @code{@@1.1} and @code{@@2.0} could be @code{@@1.2}. Note that a tag can be any number that isn't already taken. Since we are using floating point numbers, we theoretically have infinite possibilities to choose from.
+@noindent You may have thought we would make the new item the new @samp{@@2.0} and increment the tag number of all the old items from @samp{@@2.0} onwards BUT if we followed such method then the tag numbers wouldn't be permanent. We need permanent identification number so we can reference items by their tag number and rest assure that it never change into another item.
+
+@noindent Note that a tag can be any positive number that isn't already taken. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
 
 @node Tagline
 @section Tagline
