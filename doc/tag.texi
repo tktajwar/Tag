@@ -29,8 +29,6 @@ Texts.  A copy of the license is included in the section entitled
 @node Top
 @top The Tag Manual
 
-Tag is an editor independent plain text document format that uses floating point numbers to index its sections. Tag aims to be efficient, minimal, and predictable. Tagfiles can be used for personal note taking, academic writing, literate programming, todo lists, configuration files, documentation, and any sorted and permenantly indexed plain text data.
-
 @insertcopying
 
 @menu
@@ -42,7 +40,13 @@ Tag is an editor independent plain text document format that uses floating point
 @node Introduction
 @chapter Introduction
 
-Tag is a plain text document format that is designed to fix a lot of problems with other plain text formats. Most notably, tag aims to fix terrible referencing system and poor scaling in plain text formats. Tag uses something similar to Niklas Luhmann's Zettlekasten method. Tag marks each section with a permenant number and keeps all the sections organized in ascending order.
+Tag is an editor-independent plain text file indexing format that is used to establish connections between multiple files and items. This is done so by referencing one Tag item inside another in a Tag file. Tag files end with the @samp{.tag} extension.
+
+Tag files contain Tag items sorted by their alphanumeric Tag numbers (ID). This makes looking up and referencing items a lot easier than in other document formats.
+
+Tag is designed to be used for organizing your note files, keeping track of your todo lists, simplyfying literate programming, and creating software automation. But, Tag can be used for any place where you need to draw connection between multiple items in a simple plain text format.
+
+Tag is largely inspired by Niklas Luhmann's Zettelkasten method.
 
 @node How Tag works
 @section How Tag works
