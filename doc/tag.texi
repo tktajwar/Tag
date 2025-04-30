@@ -131,14 +131,15 @@ The number must be greater than previous item's and smaller than next item's.
 @node Title
 @section Title
 
-A section or any other element can be given a title. For sections, the title is one word or multiple words inside curly braces that comes after the tagstring. Example of sections with titles:
+An item in Tag can be given a title. Example of items with titles:
 
 @example
 @@1.0 Title
-@@2.0 @{Longer Title@}
+@@2.0 Longer Title
+@@2.5 A Really Long Title
 @end example
 
-@noindent A section must not be referenced using its title. The tagstring should be used instead. The title of a section can be used for description and exporting. Elements other than sections, such as files and variables, can be referred using their title.
+@noindent An item in Tag must not be referenced by its title. The tag number should be used instead. Titles are merely for human understanding and exporting.
 
 @node References
 @section References
