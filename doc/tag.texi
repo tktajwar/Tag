@@ -144,16 +144,25 @@ An item in Tag can be given a title. Example of items with titles:
 @node References
 @section References
 
-References are important part of the Tag system. Using references we can make connections between two sections. This is useful when you have a section that refers to contents mentioned in another section. Futhermore, referencing allows us to use files and variables from another section and refer to files and variables to reuse them. Reference list comes after the title of a tag element and the underscore symbol @code{_}. If you are referencing only one element then you can write the address (tagstring or title depending on the element type) after the @code{_}. For example:
+References let us make connections between two items. Reference list comes after the title of a tag element and the underscore symbol @samp{_}. For example:
 
 @example
-@@1.0 @{Origin of Butterflies@}
-::SOURCE: [[https://pmc.ncbi.nlm.nih.gov/articles/PMC10250192/]]
+@@1.0 Origin of Butterflies < butterflies.origins.txt
+@@2.0 Butterflies in Jurrassic Period? _ @@1.0 < butterflies.jurassic.txt
+@end example
+
+@file{butterflies.origins.txt}:
+
+@example
+:SOURCE: [[https://pmc.ncbi.nlm.nih.gov/articles/PMC10250192/]]
 Butterflies are flying insects from the Lepidoptera
 superfamily. Moleculars evidences suggests that
 butterflies may have originated in the Cretaceous period.
+@end example
 
-@@2.0 @{Butterflies in Jurrassic Period?@} _ @@1.0
+@file{butterflies.jurassic.txt}:
+
+@example
 Butterflies likely originated from the Cretaceous
 period, which was 145 to 66 million years ago.
 Jurassic period was 201 and 145 million years ago.
@@ -161,16 +170,23 @@ So, unless there's new evidence, butterflies probably
 didn't exist during the Jurassic period.
 @end example
 
-@noindent If you are referencing multiple elements then you'll have to put them inside comma separated curly braces. Example:
+Here, the contents of @samp{@@2.0} references the contents of @samp{@@1.0} to make a point. The @samp{<} sign is used to indicate the path to the contents of the item.
 
-@example
-@@3.75 World _ @{@@1.2, @@2.8, @@4.5@}
-@end example
+@noindent References can be used for:
 
-@noindent You can also refer to sections outside of the current document using either the absolute path or the relative path followed by @code{::} and the tagstring. For example:
-@example
-@@1.2 @{Why Tagging System@} _ @{./Notes.tag::@@1.0@}
-@end example
+@itemize @bullet{}
+@item
+Referencing contents of another item
+
+@item
+Using variables declared in another item
+
+@item
+Merging contents of multiple items together
+
+@item
+Making connections between multiple Tag documents
+@end itemize
 
 @node Flags
 @section Flags
