@@ -74,16 +74,16 @@ If we permanently tag our items with floating point numbers and sort them by the
 
 @noindent Note that a tag can be any positive number that isn't already taken. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
 
-@node Tagline
-@section Tagline
+@node Tag items
+@section Tag items
 
-The line that tags a section and has the tag number, title of the section, section's references, and section's flags is called tagline. It starts with @code{@@} followed by the tag number, title, references, and flags. Example of a tagline:
+The individual elements in a Tag file that are permanently marked with an unique tag number are called tag items. Tag items start at the beginning of line with an @samp{@@} sign followed by its tag number. They can optionally have title, reference list, flag list, and path to its associated file. Example of a tag item:
 
 @example
-@@1.5 Butterflies _ @@1.2 ^ incomplete
+@@1.5 Butterflies _ @@1.2 ^ incomplete < butterflies.txt
 @end example
 
-This line states that the section tag is @code{@@1.5}, followed by the section title "Butterflies", references section @code{@@1.2}, and it has the flag @code{incomplete} which denotes that the section isn't finished yet. The @code{_} (sub) and @code{^} (sup) signs are respectively used for reference lists and flag lists.
+Here, the tag of the item is @samp{@@1.5}, it has title @samp{Butterflies}, it references another item with tag @samp{@@1.2}, it has the flag @samp{incomplete}, and its contents lie in a file called @file{butterflies.txt}. We can imagine there's a file @file{butterflies.txt} in the same directory as our Tag file.
 
 @node Tag numbering
 @section Tag numbering
