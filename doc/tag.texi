@@ -212,6 +212,49 @@ Flags are words or labels used to convey the quality or features of a Tag item. 
 @@5.0 Ingenuity
 @end example
 
+@node Working with files
+@section Working with files
+
+A tag item can be given a path to a file as its source or destination. We'll need to preceed the path by @samp{<} symbol if it's source and @samp{>} symbol if it's destination. A source file means it's the file that contains the containts of our tag item. For example a tag item can have the source @file{contents.txt} to indicate there's a file with that name and the contents of our item resides there:
+
+@example
+@@1.0 I Have Contents! < contents.txt
+@end example
+
+@file{contents.txt}:
+
+@example
+I am the contents of @@1.0. Please think of me
+as lines under that item.
+@end example
+
+@noindent By having source files associated with tag items and making connection between those tag items we have a system where we are essentially making connection between files! Anyway, we can also have source files that indicates where our generated contents will go to. For example we can concatenate contents of two items and put the concatenated content into another file:
+
+@example
+@@1.0 < first.txt
+@@2.0 < second.txt
+@@3.0 _ @@1.0 @@2.0 ^ CONCAT > merged.txt
+@end example
+
+@file{first.txt}:
+
+@example
+This is the first file.
+@end example
+
+@file{second.txt}:
+
+@example
+This is the second file.
+@end example
+
+Concatenated @file{merged.txt}:
+
+@example
+This is the first file.
+This is the second file.
+@end example
+
 @node Metadata
 @section Metadata
 
