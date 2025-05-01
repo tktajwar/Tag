@@ -15,3 +15,20 @@ body {
   color: #eeddbb;
   background-color: #448888;
 }
+
+.example {
+    max-width: 40em;
+    border-radius: 3px;
+    box-sizing: border-box;
+    padding: .1em .5em;
+}
+
+.user-tag {
+    color: #d79921;
+    background: #3c3836;
+}
+
+.user-txt {
+    color: #504945;
+    background: #bdae93;
+}
