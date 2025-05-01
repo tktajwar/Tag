@@ -255,33 +255,6 @@ This is the first file.
 This is the second file.
 @end example
 
-@node Metadata
-@section Metadata
-
-Metadata are data about data. Metadata are useful when you need to provide information regarding certain item and how it should be processed. In Tag, metadata are used to tell the compiler how to process a tag item and provide context for the human readers. Metadata can reside in either the same line as the tag item or below them and uses @samp{:KEY:VALUE} format. For example use, here's metadata used to indicate creation time of an item:
-
-@example tag
-@@1.1 An Item :BIRTH: [2025-04-21T02:18:17+06:00]
-@end example
-
-@noindent Metadata can be used to schedule a task. For example:
-
-@example tag
-@@9.47 Watch Le Trou (1960) ^ TODO
-:SCHEDULED: <2025-06-01T18:00/PT2H20M>
-@end example
-
-@noindent Metadata entries that are situated at the beginning of the document and not part of any item are document metadata. They can tell the compiler how to process the whole document and also the viewer information about the whole documents. For example, metadata used to provide descriptive information:
-
-@example tag
-:TITLE: Metadata is amazing!
-:AUTHOR: One who loves metadata
-@@1.0 What is metadata
-@@2.0 Why we need metadata ^ @@1.0
-@end example
-
-@noindent Feel free to make your own metadata for clarity and extension. A metadata key that is foreign to the compiler will be ignored.
-
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
