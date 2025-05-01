@@ -1,11 +1,17 @@
 html {
-    background-color: lightgrey;
+    background-color: #aa9988;
 }
 
 body {
     max-width: 60em;
-    background-color: white;
+    color: #222222;
+    background-color: #eeddbb;
     margin: 0 auto;
     padding: .5em 1em 1em 1em;
     border: .1em solid grey;
+}
+
+::selection {
+  color: #eeddbb;
+  background-color: #448888;
 }
