@@ -191,34 +191,26 @@ Making connections between multiple Tag documents
 @node Flags
 @section Flags
 
-Flags are words or labels used to convey the quality or features of a Tag element. For example, a section can have the ``ARCHIVED'' flag indicating that the section is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the caret sign @code{^}. If the reference list is absent, flag list can start right after the title. Flags are case sensitive. Here's an example of flag used to convey that a section is still incomplete:
+Flags are words or labels used to convey the quality or features of a Tag item. For example, an item can have the @samp{ARCHIVED} flag indicating it is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the @samp{^} symbol. If the reference list is absent, flag list can start right after the title or tag number. Flags are case sensitive. Here's an example of flag used to convey that an item's content is still incomplete:
 
 @example
-@@3.75 @{Faith and Humanity@} _ @@2.59 ^ incomplete
+@@3.75 Faith and Humanity _ @@2.59 ^ incomplete
 @end example
 
-@noindent Flags can be used to convey that a section is now archived. For example:
+@noindent Todo flags can be used to turn an item into a todo item. @samp{TODO} and @samp{DONE} are the two basic todo states but more can be used and configured. Examples of items with todo flags:
 
 @example
-@@5.1 Drilldozer _ @@1.0 ^ ARCHIVED
+@@td.01 Finish section: attributes ^ TODO
+@@td.02 Write about biggest overcomes ^ DONE
+@@td.31 Share Tag with others ^ TODO IMPORTANT
 @end example
 
-@noindent Todo flags can be also used to turn a section into a todo item. ``TODO'' and ``DONE'' are the two basic todo states but more can be used. Examples of sections with todo flags:
-
-@example
-@@td.01 @{Finish section: attributes@} ^ TODO
-@@td.02 @{Write about biggest overcomes@} ^ DONE
-@@td.31 @{Share Tag with others@} ^ @{TODO, IMPORTANT@}
-@end example
-
-@noindent Some flags have parameter. For example, "MOVED-TO" flag will need an argument tagstring to indicate its new location. Example of a flag with argument that indicates the new location of the section:
+@noindent Some flags have parameter. For example, "MOVED-TO" flag will need an argument tag number to indicate its new location. Example of a flag with argument that indicates the new location of the item:
 
 @example
 @@1.75 ^ MOVED-TO=@@5.0
 @@5.0 Ingenuity
 @end example
-
-@noindent Flags aren't just labels you use to tell Tag compiler how you want your element to be treated. Flags can be words you use to describe a tag element. If a flag is foreign to the compiler, it will ignore it.
 
 @node Contents
 @section Contents
