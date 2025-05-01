@@ -53,7 +53,7 @@ Tag is largely inspired by Niklas Luhmann's Zettelkasten method.
 
 If we permanently tag our items with floating point numbers and sort them by their tag number, we'll have a plain text document format that's quick to look up and easy to refer to. For example, let's say we have four items with the tags @samp{@@1.0, @@2.0, @@3.0, @@4.0}:
 
-@example
+@example tag
 @@1.0
 @@2.0
 @@3.0
@@ -62,7 +62,7 @@ If we permanently tag our items with floating point numbers and sort them by the
 
 @noindent And, we want to insert a new item after @samp{@@1.0} but we don't want to change the tag number of the previous items. What we do here is tag the new item a number between @samp{@@1.0} and @samp{@@2.0} and insert them between those two items. @samp{@@1.1} will suffice here. So, the five sections are @samp{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0} where the new @samp{@@1.1} is between @samp{@@1.0} and @samp{@@2.0}:
 
-@example
+@example tag
 @@1.0
 @@1.1 <-- the newly inserted item
 @@2.0
@@ -79,7 +79,7 @@ If we permanently tag our items with floating point numbers and sort them by the
 
 The individual elements in a Tag file that are permanently marked with an unique tag number are called tag items. Tag items start at the beginning of line with an @samp{@@} sign followed by its tag number. They can optionally have title, reference list, flag list, and path to its associated file. Example of a tag item:
 
-@example
+@example tag
 @@1.5 Butterflies _ @@1.2 ^ incomplete < butterflies.txt
 @end example
 
@@ -133,7 +133,7 @@ The number must be greater than previous item's and smaller than next item's.
 
 An item in Tag can be given a title. Example of items with titles:
 
-@example
+@example tag
 @@1.0 Title
 @@2.0 Longer Title
 @@2.5 A Really Long Title
@@ -146,14 +146,14 @@ An item in Tag can be given a title. Example of items with titles:
 
 References let us make connections between two items. Reference list comes after the title of a tag element and the underscore symbol @samp{_}. For example:
 
-@example
+@example tag
 @@1.0 Origin of Butterflies < butterflies.origins.txt
 @@2.0 Butterflies in Jurrassic Period? _ @@1.0 < butterflies.jurassic.txt
 @end example
 
 @file{butterflies.origins.txt}:
 
-@example
+@example txt
 :SOURCE: [[https://pmc.ncbi.nlm.nih.gov/articles/PMC10250192/]]
 Butterflies are flying insects from the Lepidoptera
 superfamily. Moleculars evidences suggests that
@@ -162,7 +162,7 @@ butterflies may have originated in the Cretaceous period.
 
 @file{butterflies.jurassic.txt}:
 
-@example
+@example txt
 Butterflies likely originated from the Cretaceous
 period, which was 145 to 66 million years ago.
 Jurassic period was 201 and 145 million years ago.
@@ -193,13 +193,13 @@ Making connections between multiple Tag documents
 
 Flags are words or labels used to convey the quality or features of a Tag item. For example, an item can have the @samp{ARCHIVED} flag indicating it is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the @samp{^} symbol. If the reference list is absent, flag list can start right after the title or tag number. Flags are case sensitive. Here's an example of flag used to convey that an item's content is still incomplete:
 
-@example
+@example tag
 @@3.75 Faith and Humanity _ @@2.59 ^ incomplete
 @end example
 
 @noindent Todo flags can be used to turn an item into a todo item. @samp{TODO} and @samp{DONE} are the two basic todo states but more can be used and configured. Examples of items with todo flags:
 
-@example
+@example tag
 @@td.01 Finish section: attributes ^ TODO
 @@td.02 Write about biggest overcomes ^ DONE
 @@td.31 Share Tag with others ^ TODO IMPORTANT
@@ -207,7 +207,7 @@ Flags are words or labels used to convey the quality or features of a Tag item. 
 
 @noindent Some flags have parameter. For example, "MOVED-TO" flag will need an argument tag number to indicate its new location. Example of a flag with argument that indicates the new location of the item:
 
-@example
+@example tag
 @@1.75 ^ MOVED-TO=@@5.0
 @@5.0 Ingenuity
 @end example
@@ -217,20 +217,20 @@ Flags are words or labels used to convey the quality or features of a Tag item. 
 
 A tag item can be given a path to a file as its source or destination. We'll need to preceed the path by @samp{<} symbol if it's source and @samp{>} symbol if it's destination. A source file means it's the file that contains the containts of our tag item. For example a tag item can have the source @file{contents.txt} to indicate there's a file with that name and the contents of our item resides there:
 
-@example
+@example tag
 @@1.0 I Have Contents! < contents.txt
 @end example
 
 @file{contents.txt}:
 
-@example
+@example txt
 I am the contents of @@1.0. Please think of me
 as lines under that item.
 @end example
 
 @noindent By having source files associated with tag items and making connection between those tag items we have a system where we are essentially making connection between files! Anyway, we can also have source files that indicates where our generated contents will go to. For example we can concatenate contents of two items and put the concatenated content into another file:
 
-@example
+@example tag
 @@1.0 < first.txt
 @@2.0 < second.txt
 @@3.0 _ @@1.0 @@2.0 ^ CONCAT > merged.txt
@@ -238,19 +238,19 @@ as lines under that item.
 
 @file{first.txt}:
 
-@example
+@example txt
 This is the first file.
 @end example
 
 @file{second.txt}:
 
-@example
+@example txt
 This is the second file.
 @end example
 
 Concatenated @file{merged.txt}:
 
-@example
+@example txt
 This is the first file.
 This is the second file.
 @end example
@@ -260,20 +260,20 @@ This is the second file.
 
 Metadata are data about data. Metadata are useful when you need to provide information regarding certain item and how it should be processed. In Tag, metadata are used to tell the compiler how to process a tag item and provide context for the human readers. Metadata can reside in either the same line as the tag item or below them and uses @samp{:KEY:VALUE} format. For example use, here's metadata used to indicate creation time of an item:
 
-@example
+@example tag
 @@1.1 An Item :BIRTH: [2025-04-21T02:18:17+06:00]
 @end example
 
 @noindent Metadata can be used to schedule a task. For example:
 
-@example
+@example tag
 @@9.47 Watch Le Trou (1960) ^ TODO
 :SCHEDULED: <2025-06-01T18:00/PT2H20M>
 @end example
 
 @noindent Metadata entries that are situated at the beginning of the document and not part of any item are document metadata. They can tell the compiler how to process the whole document and also the viewer information about the whole documents. For example, metadata used to provide descriptive information:
 
-@example
+@example tag
 :TITLE: Metadata is amazing!
 :AUTHOR: One who loves metadata
 @@1.0 What is metadata
