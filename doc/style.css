@@ -16,6 +16,10 @@ body {
   background-color: #448888;
 }
 
+.display, .example {
+    overflow: auto;
+}
+
 .example {
     max-width: 40em;
     border-radius: 3px;
