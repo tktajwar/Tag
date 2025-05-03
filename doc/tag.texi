@@ -32,7 +32,7 @@ Texts.  A copy of the license is included in the section entitled
 @insertcopying
 
 @menu
-* Introduction::                        Introduction to the core philosophy of Tags
+* Introduction::                        The core philosophy of Tag.
 
 * GNU Free Documentation License::      Copying and sharing this documentation.
 @end menu
@@ -40,13 +40,9 @@ Texts.  A copy of the license is included in the section entitled
 @node Introduction
 @chapter Introduction
 
-Tag is an editor-independent plain text file indexing format that is used to establish connections between multiple files and items. This is done so by referencing one Tag item inside another in a Tag file. Tag files end with the @samp{.tag} extension.
+Tag is an editor-independent plain text file indexing format that is used to establish connections between multiple files and items. This is done so by referencing one Tag item inside another in a Tag file. Tag files end with the @file{.tag} extension.
 
-Tag files contain Tag items sorted by their alphanumeric Tag numbers (ID). This makes looking up and referencing items a lot easier than in other document formats.
-
-Tag is designed to be used for organizing your note files, keeping track of your todo lists, simplyfying literate programming, and creating software automation. But, Tag can be used for any place where you need to draw connection between multiple items in a simple plain text format.
-
-Tag is largely inspired by Niklas Luhmann's Zettelkasten method.
+Tag is largely inspired by late German sociologist Niklas Luhmann's @i{Zettelkasten} method.
 
 @node How Tag Numbering works
 @section How Tag Numbering works
