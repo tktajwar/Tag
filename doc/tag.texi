@@ -61,7 +61,7 @@ Tag is an indexing format. This means Tag stores the list of all the files and i
 @node How Tag Numbering works
 @section How Tag Numbering works
 
-If we permanently tag our items with floating point numbers and sort them by their tag number, we'll have a plain text document format that's quick to look up and easy to refer to. For example, let's say we have four items with the tags @samp{@@1.0, @@2.0, @@3.0, @@4.0}:
+Tag marks, sorts, and identifies items with alphanumeric floating point numbers. This makes item look-up and referencing a lot easier. For example, let's say we have four items with the tags @samp{@@1.0, @@2.0, @@3.0, @@4.0}:
 
 @example tag
 @@1.0
@@ -70,7 +70,7 @@ If we permanently tag our items with floating point numbers and sort them by the
 @@4.0
 @end example
 
-@noindent And, we want to insert a new item after @samp{@@1.0} but we don't want to change the tag number of the previous items. What we do here is tag the new item a number between @samp{@@1.0} and @samp{@@2.0} and insert them between those two items. @samp{@@1.1} will suffice here. So, the five sections are @samp{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0} where the new @samp{@@1.1} is between @samp{@@1.0} and @samp{@@2.0}:
+@noindent And, we want to insert a new item after @samp{@@1.0} but we don't want to change the tag number of the old items. What we do here is tag the new item a number between @samp{1.0} and @samp{2.0} and then insert the new item. @samp{1.1} will suffice here. So, the five sections are @samp{@@1.0, @@1.1, @@2.0, @@3.0, @@4.0} where the new @samp{@@1.1} is between @samp{@@1.0} and @samp{@@2.0}:
 
 @example tag
 @@1.0
@@ -80,9 +80,9 @@ If we permanently tag our items with floating point numbers and sort them by the
 @@4.0
 @end example
 
-@noindent You may have thought we would make the new item the new @samp{@@2.0} and increment the tag number of all the old items from @samp{@@2.0} onwards BUT if we followed such method then the tag numbers wouldn't be permanent. We need permanent identification number so we can reference items by their tag number and rest assure that it never change into another item.
+@noindent The tag number of an item is permanent. We need permanent identification number so we can easily reference items and not worry about it ever changing.
 
-@noindent Note that a tag can be any positive number that isn't already taken. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
+Note that a tag can be any positive number that isn't already taken by another item. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.5}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
 
 @node Tag items
 @section Tag items
