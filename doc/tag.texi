@@ -124,18 +124,19 @@ The number must be greater than previous item's and smaller than next item's.
 
 @noindent A tag number under the hood is implemented with a string mantissa and an integer exponent. This custom data type is chosen over float/double for range and precision.
 
-@node Title
-@section Title
+@node Item Title
+@section Item Title
 
-An item in Tag can be given a title. Example of items with titles:
+An item in Tag can be given a title. They should be placed right after the tag number. Example of items with titles:
 
 @example tag
-@@1.0 Title
-@@2.0 Longer Title
-@@2.5 A Really Long Title
+@@1.0 | The First Item
+@@2.0 | Second Item
+@@2.5 | The Item After Second Item
+@@3.0 | The Last Item?
 @end example
 
-@noindent An item in Tag must not be referenced by its title. The tag number should be used instead. Titles are merely for human understanding and exporting.
+@noindent Titles are sort of special components as they don't have property key and they aren't really flags.
 
 @node References
 @section References
