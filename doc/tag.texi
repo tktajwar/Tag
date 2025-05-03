@@ -84,12 +84,12 @@ Tag marks, sorts, and identifies items with alphanumeric floating point numbers.
 
 Note that a tag can be any positive number that isn't already taken by another item. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.5}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
 
-@node Tag numbers
-@section Tag numbers
+@node Valid Tag numbers
+@section Valid Tag numbers
 
-Tag numbers are positive alphanumeric floating point numbers consisting of Latin letters and/or Arabic numerals that are used to identify and sort tag items. Tag numbers are represented with an @samp{@@} followed by the tag number. For example, @samp{@@1.0}, @samp{@@1.1}, @samp{@@1.19}, @samp{@@1.B2}, @samp{@@12.5}, @samp{@@786.25}, @samp{@@300000000.59}, and @samp{@@0.0000000001} are all valid tag numbers. The radix-point character @samp{.} is used to separate the whole number from the fraction.
+Tag numbers are positive alphanumeric floating-point numbers consisting of Latin letters and Arabic numerals that are used identifiers for tag items. Tag numbers are represented with an @samp{@@} followed by the number. For example, @samp{@@1.0}, @samp{@@1.1}, @samp{@@1.19}, @samp{@@1.B2}, @samp{@@12.5}, @samp{@@786.25}, @samp{@@300000000.59}, and @samp{@@0.0000000001} are all valid tag numbers. The radix-point character (@kbd{.}) is used to separate the whole number from the fraction.
 
-@noindent The tag number is alphanumeric which means the tag number is made out of both numbers @samp{0} through @samp{9} and alphabets @samp{A} through @samp{Z} and @samp{a} through @samp{z}. After @samp{9} comes @samp{A}. This is base 62 numeral system. This is chosen so we can express more tags with fewer digits and create more meaningful tag numbers. All of the numbers in base 62 numeral system in ascending order:
+The tag number is alphanumeric which means the tag number is made out of both the numbers @kbd{0} through @kbd{9} and the letters @kbd{A} through @kbd{Z} and @kbd{a} through @kbd{z}. After @kbd{9} comes @kbd{A}. This is base 62 numeral system. This is chosen so we can express more tags with fewer digits and create more meaningful tag numbers. All the digits in base 62 numeral system in ascending order:
 
 @example
 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
@@ -103,23 +103,20 @@ A tag number cannot contain anything other than:
 
 @itemize @minus{}
 @item
-one @samp{@@} in the beginning
+one @kbd{@@} in the beginning
 
 @item
 alphanumeric characters
 
 @item
-radix point @samp{.}
-
-@item
-@samp{/} parent-child separator
+radix point (@kbd{.})
 @end itemize
 
 @item
-A tag number must be greater than zero. @samp{@@0.0} is not a valid number.
+The number must be unique. No two items with the same tag number.
 
 @item
-There cannot be two tag items in one document with the same tag number.
+The number must be greater than zero. @samp{@@0.0} is not a valid tag number.
 
 @item
 The number must be greater than previous item's and smaller than next item's.
