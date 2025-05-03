@@ -84,17 +84,6 @@ Tag marks, sorts, and identifies items with alphanumeric floating point numbers.
 
 Note that a tag can be any positive number that isn't already taken by another item. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.5}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
 
-@node Tag items
-@section Tag items
-
-The individual elements in a Tag file that are permanently marked with an unique tag number are called tag items. Tag items start at the beginning of line with an @samp{@@} sign followed by its tag number. They can optionally have title, reference list, flag list, and path to its associated file. Example of a tag item:
-
-@example tag
-@@1.5 Butterflies _ @@1.2 ^ incomplete < butterflies.txt
-@end example
-
-Here, the tag of the item is @samp{@@1.5}, it has title @samp{Butterflies}, it references another item with tag @samp{@@1.2}, it has the flag @samp{incomplete}, and its contents lie in a file called @file{butterflies.txt}. We can imagine there's a file @file{butterflies.txt} in the same directory as our Tag file.
-
 @node Tag numbers
 @section Tag numbers
 
