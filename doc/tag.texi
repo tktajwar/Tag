@@ -44,6 +44,20 @@ Tag is an editor-independent plain text file indexing format that is used to est
 
 Tag is largely inspired by late German sociologist Niklas Luhmann's @i{Zettelkasten} method.
 
+@node Structure of Tag files
+@section Structure of Tag files
+
+Tag is an indexing format. This means Tag stores the list of all the files and items of your interest along with their titles, relationships, and what to make of them. Imagine the file system your computer is your kitchen cabinet. The files on your computer are foods and ingredients disorderly placed on the cabinet. Then tag is a personal reference book where you keep track of all the items on your cabinet by giving them an unique identifier along with where they are located on the cabinet, what you can do with them, and how one is related to another. By keeping a list of all your items in such manner defines the structure of your project/directory and streamlines your workflow. Here's an example Tag file:
+
+@example tag
+@@1.8 | Platypus  | #animals #land  | :src: platypus.txt
+@@1.9 | Octopus   | #animals #ocean | :src: octopus.txt
+@@2.9 | Creatures | #animals | :ref: @@1.8 @@1.9 | :src: crit.txt
+@@3.3 | Tentacles | #animals | :ref: @@1.8 | :src: tentacles.txt
+@end example
+
+@noindent Here, each items are separate by new lines. All the items are sorted by their unique identifier, tag number. This is important as it makes item search much easier. The components of each items are separated by the pipe (@kbd{|}) symbol. The first component of any item has to be its identifier i.e. the tag number. Tag number is the only mandatory component of any Tag item. The component followed by the tag number in the example is the title of the item. Like every other component other than the tag number, it is optional. The component followed by the title in the example is the flag list. These are used for labels and categorization. Lastly, the @code{:src:} property refers to the path to the content of the item i.e. its source and the @code{:ref:} is the list of all the other items the current item references. The components of an item shouldn't be broken down into multiple lines. And, neither should multiple items be declared in one line. Having one line per item keeps everything neatly organized.
+
 @node How Tag Numbering works
 @section How Tag Numbering works
 
