@@ -138,6 +138,32 @@ An item in Tag can be given a title. They should be placed right after the tag n
 
 @noindent Titles are sort of special components as they don't have property key and they aren't really flags.
 
+@node Item Flags
+@section Item Flags
+
+Flags are words or labels used to convey the quality or features of a Tag item. They must start with the hash (@kbd{#}) symbol followed by the name of the flag. Flags are boolean variables meaning an item either has a specific flag or it does not. They are case-sensitive and multiple of them can reside inside the same component. Flags can be used to label and categorize items:
+
+@example tag
+@@b.83 | "The Raft" by Stephen King   | #books #horror
+@@b.98 | "Red Rising" by Pierce Brown | #books #dystopian
+@@c.21 | Brother (1997)               | #cinema #crime #drama
+@@c.a5 | Seven Samurai (1954)         | #cinema #drama
+@end example
+
+@noindent Some flags have special meaning to the Tag system. For example, an item can have the @code{#ARCHIVED} flag indicates it is now archived and will be ignored by the compiler:
+
+@example tag
+@@3.75 | #ARCHIVED
+@end example
+
+@noindent Todo flags can be used to turn an item into a todo item. @code{#TODO} and @code{#DONE} are the two basic todo states but more can be used and configured. Examples of items with todo flags:
+
+@example tag
+@@td.01 | Finish Reading about Flags    | #TODO
+@@td.02 | Write about Biggest Overcomes | #DONE
+@@td.31 | Share Tag with others         | #TODO #IMPORTANT
+@end example
+
 @node References
 @section References
 
@@ -184,30 +210,6 @@ Merging contents of multiple items together
 @item
 Making connections between multiple Tag documents
 @end itemize
-
-@node Flags
-@section Flags
-
-Flags are words or labels used to convey the quality or features of a Tag item. For example, an item can have the @samp{ARCHIVED} flag indicating it is now archived (and will be ignored by the compiler). Flag lists starts after the reference list followed by the @samp{^} symbol. If the reference list is absent, flag list can start right after the title or tag number. Flags are case sensitive. Here's an example of flag used to convey that an item's content is still incomplete:
-
-@example tag
-@@3.75 Faith and Humanity _ @@2.59 ^ incomplete
-@end example
-
-@noindent Todo flags can be used to turn an item into a todo item. @samp{TODO} and @samp{DONE} are the two basic todo states but more can be used and configured. Examples of items with todo flags:
-
-@example tag
-@@td.01 Finish section: attributes ^ TODO
-@@td.02 Write about biggest overcomes ^ DONE
-@@td.31 Share Tag with others ^ TODO IMPORTANT
-@end example
-
-@noindent Some flags have parameter. For example, "MOVED-TO" flag will need an argument tag number to indicate its new location. Example of a flag with argument that indicates the new location of the item:
-
-@example tag
-@@1.75 ^ MOVED-TO=@@5.0
-@@5.0 Ingenuity
-@end example
 
 @node Working with files
 @section Working with files
