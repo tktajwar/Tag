@@ -164,6 +164,29 @@ Flags are words or labels used to convey the quality or features of a Tag item. 
 @@td.31 | Share Tag with others         | #TODO #IMPORTANT
 @end example
 
+@node Item Properties
+@section Item Properties
+
+Items in Tag can be given named properties. Properties are key-value pairs. The key of the property need to be enclosed inside colon (@kbd{:}) symbols and it should be followed by the value, like @samp{:@var{key}: @var{value}}. Properties can be used to denote named information regarding an item:
+
+@example tag
+@@c.35 | Scarface (1983)           | :director: Brian De Palma | :rating: 4.1
+@@c.39 | 12 Angry Men (1957)       | :director: Sidney Lumet   | :rating: 4.6
+@@c.42 | Memories of Murder (2003) | :director: Bong Joon Ho   | :rating: 4.4
+@end example
+
+@noindent Properties can be used to establishs connection between multiple items in a Tag document:
+
+@example tag
+@@3.24 | Life of an Octopus
+@@3.9o | Living in a Garden
+@@3.98 | Octupus's Garden? | :ref: @@3.24 @@3.9o
+@@12.1 | C main function | :dep: @@12.9
+@@12.9 | C helper functions
+@end example
+
+@noindent Multiple properties must not be declared in a single component. Use one component per property declaration.
+
 @node References
 @section References
 
