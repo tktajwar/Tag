@@ -187,6 +187,30 @@ Items in Tag can be given named properties. Properties are key-value pairs. The 
 
 @noindent Multiple properties must not be declared in a single component. Use one component per property declaration.
 
+@node Linking files to Items
+@section Linking files to Items
+
+Using appropriate properties, a file can be linked to a tag item. The @code{:src:} property is used to link the source (content) of an item. For example, a tag item that has its content stored in @file{contents.txt}:
+
+@example tag
+@@1.0 | I Have Contents! | :src: contents.txt
+@end example
+
+@file{contents.txt}:
+
+@example txt
+I am the contents of @@1.0. Please think of me
+as contents inside that item.
+@end example
+
+@noindent We can also denote the output file. For example, using property @code{:obj:} we can declare the desired object path for our C code:
+
+@example tag
+@@3.0 | My C Code | :sh: cc -c -o $:obj: $:src: | :obj: code.o | :src: code.c
+@end example
+
+@noindent That value given with the @code{:sh:} (shell command) property will translate to @samp{cc -c -o code.o code.c}. Running that tag item will compile @file{code.c} into @file{code.o}. 
+
 @node References
 @section References
 
@@ -233,49 +257,6 @@ Merging contents of multiple items together
 @item
 Making connections between multiple Tag documents
 @end itemize
-
-@node Working with files
-@section Working with files
-
-A tag item can be given a path to a file as its source or destination. We'll need to preceed the path by @samp{<} symbol if it's source and @samp{>} symbol if it's destination. A source file means it's the file that contains the containts of our tag item. For example a tag item can have the source @file{contents.txt} to indicate there's a file with that name and the contents of our item resides there:
-
-@example tag
-@@1.0 I Have Contents! < contents.txt
-@end example
-
-@file{contents.txt}:
-
-@example txt
-I am the contents of @@1.0. Please think of me
-as lines under that item.
-@end example
-
-@noindent By having source files associated with tag items and making connection between those tag items we have a system where we are essentially making connection between files! Anyway, we can also have source files that indicates where our generated contents will go to. For example we can concatenate contents of two items and put the concatenated content into another file:
-
-@example tag
-@@1.0 < first.txt
-@@2.0 < second.txt
-@@3.0 _ @@1.0 @@2.0 ^ CONCAT > merged.txt
-@end example
-
-@file{first.txt}:
-
-@example txt
-This is the first file.
-@end example
-
-@file{second.txt}:
-
-@example txt
-This is the second file.
-@end example
-
-Concatenated @file{merged.txt}:
-
-@example txt
-This is the first file.
-This is the second file.
-@end example
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
