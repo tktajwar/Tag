@@ -211,17 +211,18 @@ as contents inside that item.
 
 @noindent That value given with the @code{:sh:} (shell command) property will translate to @samp{cc -c -o code.o code.c}. Running that tag item will compile @file{code.c} into @file{code.o}. 
 
-@node References
-@section References
+@node Cross-referencing Items
+@section Cross-referencing Items
 
-References let us make connections between two items. Reference list comes after the title of a tag element and the underscore symbol @samp{_}. For example:
+An item in Tag can reference other items using the reference list property. The property key for reference list is @code{:ref:}. For example:
 
 @example tag
-@@1.0 Origin of Butterflies < butterflies.origins.txt
-@@2.0 Butterflies in Jurrassic Period? _ @@1.0 < butterflies.jurassic.txt
+@@1.0 | Origin of Butterflies            | :src: bfs.origins.txt
+@@2.0 | The Jurrassic Period@            | :src: jurassic.txt
+@@2.2 | Butterflies in Jurrassic Period? | :ref: @@1.0 @@2.0 | :src: bfs.jrc.txt
 @end example
 
-@file{butterflies.origins.txt}:
+@file{bfs.origins.txt}:
 
 @example txt
 :SOURCE: [[https://pmc.ncbi.nlm.nih.gov/articles/PMC10250192/]]
@@ -230,7 +231,16 @@ superfamily. Moleculars evidences suggests that
 butterflies may have originated in the Cretaceous period.
 @end example
 
-@file{butterflies.jurassic.txt}:
+@file{jurassic.txt}:
+
+@example txt
+The Jurassic is a geological period that spanned
+from approximately 201 to 145 million years
+ago: end of the Triassic Period to the beginning
+of the Cretaceous period.
+@end example
+
+@file{bfs.jrc.txt}:
 
 @example txt
 Butterflies likely originated from the Cretaceous
@@ -240,23 +250,7 @@ So, unless there's new evidence, butterflies probably
 didn't exist during the Jurassic period.
 @end example
 
-Here, the contents of @samp{@@2.0} references the contents of @samp{@@1.0} to make a point. The @samp{<} sign is used to indicate the path to the contents of the item.
-
-@noindent References can be used for:
-
-@itemize @bullet{}
-@item
-Referencing contents of another item
-
-@item
-Using variables declared in another item
-
-@item
-Merging contents of multiple items together
-
-@item
-Making connections between multiple Tag documents
-@end itemize
+@noindent The contents of @samp{@@2.0} references the contents of @samp{@@1.0} and @samp{@@2.0} to make a point.
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
