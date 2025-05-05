@@ -36,6 +36,8 @@ Texts.  A copy of the license is included in the section entitled
 
 * Tag Items::                           The building blocks of Tag.
 
+* Document Properties::                 Define a Tag document.
+
 * GNU Free Documentation License::      Copying and sharing this documentation.
 @end menu
 
@@ -258,6 +260,11 @@ didn't exist during the Jurassic period.
 @end example
 
 @noindent The contents of @samp{@@2.0} references the contents of @samp{@@1.0} and @samp{@@2.0} to make a point.
+
+@node Document Properties
+@chapter Document Properties
+
+Sometimes we need to set properties not for a particular tag item but for the whole document. These may include document header information such as the title, author, and date or variables that we want all the items in the document to be able to access. Document properties are defined at the beginning of the tag file before the definition of any tag item.
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
