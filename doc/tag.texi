@@ -34,6 +34,8 @@ Texts.  A copy of the license is included in the section entitled
 @menu
 * Introduction::                        The core philosophy of Tag.
 
+* Tag Items::                           The building blocks of Tag.
+
 * GNU Free Documentation License::      Copying and sharing this documentation.
 @end menu
 
@@ -123,6 +125,11 @@ The number must be greater than previous item's and smaller than next item's.
 @end itemize
 
 @noindent A tag number under the hood is implemented with a string mantissa and an integer exponent. This custom data type is chosen over float/double for range and precision.
+
+@node Tag Items
+@chapter Tag Items
+
+Tag items are the single units in Tag files. Tag items are defined in one line and may have multiple components separated by the pipe (@kbd{|}) symbol. A tag item must start with its tag number component, followed by the title component if it exists; the order of rest of the components does not matter.
 
 @node Item Title
 @section Item Title
