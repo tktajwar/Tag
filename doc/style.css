@@ -11,6 +11,10 @@ body {
     border: .1em solid grey;
 }
 
+p, pre, li, dt, dd, table, code, address {
+    line-height: 1.4em;
+}
+
 ::selection {
   color: #eeddbb;
   background-color: #448888;
