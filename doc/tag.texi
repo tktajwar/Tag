@@ -266,6 +266,31 @@ didn't exist during the Jurassic period.
 
 Sometimes we need to set properties not for a particular tag item but for the whole document. These may include document header information such as the title, author, and date or variables that we want all the items in the document to be able to access. Document properties are defined at the beginning of the tag file before the definition of any tag item.
 
+@node Document header properties
+@section Document header properties
+
+These properties can be used as the header of the document:
+
+@table @code
+@item :TITLE:
+The title of the document.
+
+@item :AUTHOR:
+The author of the document.
+
+@item :DATE:
+A date or a timestamp.
+
+@item :EMAIL:
+An email address.
+
+@item :LANGUAGE:
+Language of the document.
+
+@item :DESCRIPTION:
+A short description of the document.
+@end table
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
