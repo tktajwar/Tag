@@ -312,6 +312,31 @@ An example document with header properties:
 @@4.12 | The Big Storm   | :src: big-storm.txt
 @end example
 
+@node Document variables
+@section Document variables
+
+You can define a property at the beginning of a tag file and use it everywhere. The header properties are also document variables. Example of document variable and its usage:
+
+@example tag
+:TITLE: How to use document variables
+:AUTHOR: Doc Dopey
+
+:x: 5
+:name: :AUTHOR:
+
+@@1.0 | :sh: echo My name is :name:
+@@1.1 | :sh: echo x = :x:
+@@1.2 | :sh: echo The title of this tag is :TITLE:
+@end example
+
+@noindent Running the @code{:sh:} commands of the above example would produce:
+
+@example
+My name is Doc Dopey
+x = 5
+The title of this tag is How to use document variables
+@end example
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
