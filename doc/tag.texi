@@ -291,6 +291,27 @@ Language of the document.
 A short description of the document.
 @end table
 
+@node Example document header
+@section Example document header
+
+An example document with header properties:
+
+@example tag
+:TITLE: My Journal
+:AUTHOR: Mike Anderson
+:DATE: <1999-02-21>
+:EMAIL: anderson@@little-tall.org
+:LANGUAGE: en
+:DESCRIPTION: My journal entries from the Little Tall Island.
+
+@@1.04 | Proposing Molly | :src: proposing-molly.txt
+@@1.23 | Graduation      | :src: graduation.txt
+@@1.45 | Our Wedding     | :src: our-wedding.txt
+@@2.34 | Having a son    | :src: having-son.txt
+@@3.21 | Our new venture | :src: new-business.txt
+@@4.12 | The Big Storm   | :src: big-storm.txt
+@end example
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
