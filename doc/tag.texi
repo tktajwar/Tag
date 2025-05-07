@@ -38,6 +38,8 @@ Texts.  A copy of the license is included in the section entitled
 
 * Document Properties::                 Define a Tag document.
 
+* Dates and Times::                     Representation of time, intervals, and duration.
+
 * GNU Free Documentation License::      Copying and sharing this documentation.
 @end menu
 
@@ -336,6 +338,13 @@ My name is Doc Dopey
 x = 5
 The title of this tag is How to use document variables
 @end example
+
+@node Dates and Times
+@chapter Dates and Times
+
+Tag supports timestamps to satisfy the need for date and time representation. Timestamps can be used for tracking time, scheduling todo items, etc. To denote a certain period in time, tag has time period and to denote a duration of time, tag has time duration.
+
+Tag supports ISO 8601 format for representing time. Timestamps and durations in Tag should be enclosed inside angle bracket (@kbd{<>}) symbols.
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
