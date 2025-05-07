@@ -351,6 +351,15 @@ Tag supports ISO 8601 format for representing time. Timestamps and durations in 
 
 ISO 8601, maintained by the International Organization for Standardization, is an international standard for time-related data. ISO 8601 timestamp format is ordered from largest to smallest unit of time, padded with leading zeros, uses hyphen and colons as unit separators, supports timezone, and is in 24-hour format. ISO 8601 supports multiple formats for representing time but commonly @code{<@var{yyyy}-@var{mm}-@var{dd}>} is used for just date and @code{<@var{yyyy}-@var{mm}-@var{dd}T@var{hh}:@var{mm}>} is used for date and time.
 
+@node ISO 8601 Dates
+@subsection ISO 8601 Dates
+
+Dates are most easily represented with the year-month-day format. For example, @samp{<2025-05-07>}. The units are separated with hyphen (@kbd{-}) symbol. Each unit has a fixed number of digits and must be padded with leading zeros. You may drop the month day to represent just a year and a month. For example, to represent May 2025 you could use @samp{<2025-05>} and to represent just the year 2025 use @samp{<2025>}.
+
+Dates can also be represented with week numbers. The format is @code{<@var{YYYY}-W@var{ww}-@var{D}>} where @var{YYYY} represents ISO week-numbering year, @var{ww} represents the week number from @samp{W01} to @samp{W53} of the year, and @var{D} represents the weekday number from @samp{1} (Monday) to @samp{7} (Sunday). For example, Wednesday 19th week of the year 2025 is @samp{2025-W19-3}. The weekday number can be ignored to represent a week of a year. So, 19th week of the year 2025 is @samp{2025-W19}.
+
+Use ordinal date to represent date with days since the start of the year. The format is @code{@var{yyyy}-@var{DDD}} where @var{yyyy} represents a year and @var{DDD} represents the day of the year. For example, 127th day of the year 2025 is @samp{2025-127}. This will not create ambiguity with year-month since month numbers have two digits and day of the year numbers have three.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
