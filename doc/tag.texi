@@ -346,6 +346,11 @@ Tag supports timestamps to satisfy the need for date and time representation. Ti
 
 Tag supports ISO 8601 format for representing time. Timestamps and durations in Tag should be enclosed inside angle bracket (@kbd{<>}) symbols.
 
+@node ISO 8601 Timestamps
+@section ISO 8601 Timestamps
+
+ISO 8601, maintained by the International Organization for Standardization, is an international standard for time-related data. ISO 8601 timestamp format is ordered from largest to smallest unit of time, padded with leading zeros, uses hyphen and colons as unit separators, supports timezone, and is in 24-hour format. ISO 8601 supports multiple formats for representing time but commonly @code{<@var{yyyy}-@var{mm}-@var{dd}>} is used for just date and @code{<@var{yyyy}-@var{mm}-@var{dd}T@var{hh}:@var{mm}>} is used for date and time.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
