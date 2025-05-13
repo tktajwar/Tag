@@ -389,6 +389,25 @@ If you prefer not to clutter your timestamps with extra information, you could u
 @@2.0 | 2026 First Philippine Republic Day | :time: <2026-01-23>
 @end example
 
+@node ISO 8601 Time periods
+@section ISO 8601 Time periods
+
+Durations or time periods define a length of time. They can be used to denote duration of a todo item, how long an event is supposed to take, the end time given the begin time (or vice versa) of an interval, etc. Time periods in ISO 8601 are represented with the letter @kbd{P} (meaning period) followed by the number and element pairs. For example, 1 year is represented with @samp{<P1Y>}, 7 months and 2 days is represented with @samp{<P7M2D>}, 12 minutes and 30 seconds is represented with @samp{<PT12M30S>}, and 2 days and 12 hours is represented with @samp{<P2DT12H>}. The letter @kbd{T} is a time designator that is placed before the time components to reduce ambiguity with month and minute components. All the period designators in order:
+
+@verbatim
+P (mandatory period indicator)
+Y (year)
+M (month)
+W (week)
+D (day)
+T (time designator)
+H (hour)
+M (minute)
+S (second)
+@end verbatim
+
+@noindent Note that @samp{<P1M>} means a period of one month. How many days are in that month depends on the context. If you wish to represent a period of 30 days use @samp{<P30D>} instead.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
