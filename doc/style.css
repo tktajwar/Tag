@@ -20,7 +20,7 @@ p, pre, li, dt, dd, table, code, address {
   background-color: #448888;
 }
 
-.display, .example {
+.display, .example, .verbatim {
     overflow: auto;
 }
 
