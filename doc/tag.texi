@@ -97,9 +97,9 @@ Tag numbers are positive alphanumeric floating-point numbers consisting of Latin
 
 The tag number is alphanumeric which means the tag number is made out of both the numbers @kbd{0} through @kbd{9} and the letters @kbd{A} through @kbd{Z} and @kbd{a} through @kbd{z}. After @kbd{9} comes @kbd{A}. This is base 62 numeral system. This is chosen so we can express more tags with fewer digits and create more meaningful tag numbers. All the digits in base 62 numeral system in ascending order:
 
-@example
+@verbatim
 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
-@end example
+@end verbatim
 
 @noindent There a few rules to choosing a tag numbers:
 
