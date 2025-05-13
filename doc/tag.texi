@@ -408,6 +408,11 @@ S (second)
 
 @noindent Note that @samp{<P1M>} means a period of one month. How many days are in that month depends on the context. If you wish to represent a period of 30 days use @samp{<P30D>} instead.
 
+@node ISO 8601 Time intervals
+@section ISO 8601 Time intervals
+
+Intervals in ISO 8601 can be represented with @code{<@var{start}/@var{end}>}, @code{<@var{start}/@var{duration}>}, or @code{<@var{duration}/@var{end}>}. For example, an interval starts at the beginning of year 2024 and ends at the start of year 2026 is @samp{<2024-01-01/2026-01-01>} or @samp{<2024-01-01/P2Y>} or @samp{<P2Y/2026-01-01>}. Intervals can be used to plan your todo items, set the relevance time, etc. A time interval with only duration is not allowed.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
