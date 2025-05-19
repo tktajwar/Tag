@@ -413,6 +413,13 @@ S (second)
 
 Intervals in ISO 8601 can be represented with @code{<@var{start}/@var{end}>}, @code{<@var{start}/@var{duration}>}, or @code{<@var{duration}/@var{end}>}. For example, an interval starts at the beginning of year 2024 and ends at the start of year 2026 is @samp{<2024-01-01/2026-01-01>} or @samp{<2024-01-01/P2Y>} or @samp{<P2Y/2026-01-01>}. Intervals can be used to plan your todo items, set the relevance time, etc. A time interval with only duration is not allowed.
 
+@node ISO 8601 Repeating intervals
+@section ISO 8601 Repeating intervals
+
+Repetition in time can be represented in ISO 8601 with repeating intervals. The format is @code{<R@var{n}/@var{start}/@var{duration}>}. The letter @kbd{R} is used to denote repeating interval. It is followed by the number @var{n} to express the number of repitition. The @var{start} time is the start of the repition. The @var{duration} period is the duration between each repitition. For example, an event that starts on 19th May of 2025 and occur every week for 5 weeks, @samp{<R5/2025-05-19/P1W>}. This is equivalent to @samp{<2025-05-19>}, @samp{<2025-05-26>}, @samp{<2025-06-02>}, @samp{<2025-06-09>}, and @samp{<2025-06-16>} all together.
+
+The number of repitition @var{n} can be left out or specied a value of @kbd{-1} to express a repeating interval with indefinite number of repitition. The value @kbd{0} will mean the interval will not repeat at all.
+
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
 
