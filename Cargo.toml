@@ -1,0 +1,13 @@
+[package]
+name = "tajwar-tag"
+version = "0.3.0"
+edition = "2024"
+authors = ["Sayed Takey Tajwar Arko"]
+repository = "https://codeberg.org/tktajwar/tag"
+categories = ["command-line-utilities", "text-editors", "database"]
+
+[dependencies]
+
+[[bin]]
+name = "tag"
+path = "src/main.rs"
