@@ -84,3 +84,30 @@ impl fmt::Display for TagID {
         write!(f, "@{left}.{right}")
     }
 }
+
+impl TagID {
+    pub fn after(tag_id: &TagID) -> TagID {
+	let mut mantissa = tag_id.mantissa.clone();
+
+	let Some(last_digit) = mantissa.pop() else {
+	    panic!("Coudln't get the last digit of the given Tag number");
+	};
+
+	let s: String;
+	mantissa.push_str(match last_digit {
+	    '0'..'9'
+		| 'A'..'Z'
+		| 'a'..'z'
+		=> {
+		    s = ((last_digit as u8 + 1 as u8) as char).to_string();
+		    s.as_str()
+		},
+	    '9' => "A",
+	    'Z' => "a",
+	    'z' => "z1",
+	    _ => panic!("Invalid last digit!"),
+	});
+
+	TagID{ exponent: tag_id.exponent, mantissa }
+    }
+}
