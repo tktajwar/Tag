@@ -80,28 +80,45 @@ impl fmt::Display for TagID {
 }
 
 impl TagID {
-    pub fn after(tag_id: &TagID) -> TagID {
+    pub fn generate_next(tag_id: &TagID) -> TagID {
+	let mut exponent = tag_id.exponent;
 	let mut mantissa = tag_id.mantissa.clone();
 
-	let Some(last_digit) = mantissa.pop() else {
-	    panic!("Coudln't get the last digit of the given Tag number");
+	let Some(mut last_digit) = mantissa.pop() else {
+	    panic!("Coudln't get the last digit");
 	};
 
-	let s: String;
-	mantissa.push_str(match last_digit {
+	while last_digit == 'z' {
+	    if mantissa.len() == 0 {
+		mantissa.push('1');
+		for _ in 0..exponent {
+		    mantissa.push('0');
+		}
+		exponent = exponent + 1;
+		return TagID{ exponent, mantissa };
+	    }
+	    match mantissa.pop() {
+		Some(c) => last_digit = c,
+		None => panic!("Couldn't get the suitable digit"),
+	    }
+	}
+
+	last_digit = match last_digit {
 	    '0'..'9'
 		| 'A'..'Z'
 		| 'a'..'z'
-		=> {
-		    s = ((last_digit as u8 + 1 as u8) as char).to_string();
-		    s.as_str()
-		},
-	    '9' => "A",
-	    'Z' => "a",
-	    'z' => "z1",
+		=> (last_digit as u8 + 1 as u8) as char,
+	    '9' => 'A',
+	    'Z' => 'a',
 	    _ => panic!("Invalid last digit!"),
-	});
+	};
 
-	TagID{ exponent: tag_id.exponent, mantissa }
+	mantissa.push(last_digit);
+
+	while mantissa.len() < exponent {
+	    mantissa.push('0');
+	}
+
+	TagID{ exponent, mantissa }
     }
 }
