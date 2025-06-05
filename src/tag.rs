@@ -6,8 +6,8 @@ pub struct TagID {
     mantissa: String,
 }
 
-impl From<&String> for TagID {
-    fn from(tag_number: &String) -> TagID {
+impl From<&str> for TagID {
+    fn from(tag_number: &str) -> TagID {
 	let mut mantissa: String = String::with_capacity(tag_number.len() - 1);
 	let mut start: usize = 1;
 
@@ -54,12 +54,6 @@ impl From<&String> for TagID {
 	}
 
 	TagID { exponent, mantissa }
-    }
-}
-
-impl From<&str> for TagID {
-    fn from(tag_number: &str) -> TagID {
-	TagID::from(&String::from(tag_number))
     }
 }
 
