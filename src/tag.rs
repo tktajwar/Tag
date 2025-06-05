@@ -121,4 +121,26 @@ impl TagID {
 
 	TagID{ exponent, mantissa }
     }
+
+    pub fn generate_between(smaller_id: &TagID, larger_id: &TagID) -> TagID {
+	let middle_id = TagID::generate_next(smaller_id);
+
+	if middle_id < *larger_id {
+	    return middle_id;
+	}
+
+	let exponent = smaller_id.exponent;
+	let mantissa = smaller_id.mantissa.clone() + "1";
+
+	let mut middle_id = TagID{ exponent, mantissa };
+
+	while middle_id >= *larger_id {
+	    if middle_id.mantissa.len() > middle_id.exponent {
+		middle_id.mantissa.pop();
+	    }
+	    middle_id.mantissa.push_str("01");
+	}
+
+	middle_id
+    }
 }
