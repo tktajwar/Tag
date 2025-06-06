@@ -53,6 +53,11 @@ impl From<&str> for TagID {
 	    }
 	}
 
+	// avoid @0.0
+	if mantissa.len() == 0 {
+	    panic!("Tried to create non-positive TagID!");
+	}
+
 	TagID { exponent, mantissa }
     }
 }
