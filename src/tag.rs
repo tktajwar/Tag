@@ -128,6 +128,10 @@ impl TagID {
     }
 
     pub fn generate_between(smaller_id: &TagID, larger_id: &TagID) -> TagID {
+	if !(smaller_id < larger_id) {
+	    panic!("Smaller ID must be smaller than the Larger ID!");
+	}
+
 	let middle_id = TagID::generate_next(smaller_id);
 
 	if middle_id < *larger_id {
