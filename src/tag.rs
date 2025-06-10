@@ -154,9 +154,39 @@ impl TagID {
     }
 }
 
+pub enum FieldType {
+    Invalid,
+    ID,
+    Title,
+    Flags,
+    Attribute,
+}
+
+pub struct TagField<'a> {
+    field: &'a str,
+    field_type: FieldType,
+}
+
 pub struct TagItem {
     id: TagID,
     tag_line: String,
+}
+
+impl TagItem {
+    pub fn fields(&self) -> Vec<TagField> {
+	let mut fields = Vec::new();
+
+	let pipe_split = self.tag_line.split("|").map(|x| x.trim());
+
+	for pipe_str in pipe_split {
+	    let field = pipe_str;
+	    let field_type = FieldType::Invalid;
+	    let field = TagField { field, field_type };
+	    fields.push(field);
+	}
+
+	fields
+    }
 }
 
 impl From<&str> for TagItem {
