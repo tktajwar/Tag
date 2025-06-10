@@ -153,3 +153,33 @@ impl TagID {
 	middle_id
     }
 }
+
+pub struct TagItem {
+    id: TagID,
+    tag_line: String,
+}
+
+impl From<&str> for TagItem {
+    fn from(tag_line: &str) -> TagItem {
+	let mut pipe_end = 0;
+
+	while pipe_end < tag_line.len() {
+	    if tag_line.as_bytes()[pipe_end] == b'|' {
+		break;
+	    }
+	    pipe_end += 1;
+	}
+
+	let id = TagID::from(&tag_line[0..pipe_end]);
+
+	let tag_line = String::from(tag_line);
+
+	TagItem { id, tag_line }
+    }
+}
+
+impl fmt::Display for TagItem {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+	write!(f, "{}", self.tag_line)
+    }
+}

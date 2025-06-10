@@ -1,6 +1,8 @@
 use tag::TagID;
+use tag::TagItem;
 
 fn main() {
-    println!("{}", TagID::from("@1.0"));
-    println!("Hello, tag!");
+    let a = TagItem::from("@1.01 | piper | biker");
+
+    println!("{}", a);
 }
