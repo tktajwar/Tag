@@ -8,6 +8,10 @@ categories = ["command-line-utilities", "text-editors", "database"]
 
 [dependencies]
 
+[lib]
+name = "tag"
+path = "src/lib.rs"
+
 [[bin]]
 name = "tag"
 path = "src/main.rs"
