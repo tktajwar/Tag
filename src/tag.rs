@@ -163,7 +163,7 @@ pub enum FieldType {
 }
 
 pub struct TagField<'a> {
-    field: &'a str,
+    field_str: &'a str,
     field_type: FieldType,
 }
 
@@ -179,9 +179,9 @@ impl TagItem {
 	let pipe_split = self.tag_line.split("|").map(|x| x.trim());
 
 	for pipe_str in pipe_split {
-	    let field = pipe_str;
+	    let field_str = pipe_str;
 	    let field_type = FieldType::Invalid;
-	    let field = TagField { field, field_type };
+	    let field = TagField { field_str, field_type };
 	    fields.push(field);
 	}
 
