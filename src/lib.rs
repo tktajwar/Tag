@@ -1,6 +1,8 @@
 mod tag;
 
 pub use crate::tag::TagID;
+pub use crate::tag::FieldType;
+pub use crate::tag::TagField;
 pub use crate::tag::TagItem;
 
 #[cfg(test)]

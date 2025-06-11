@@ -167,6 +167,24 @@ pub struct TagField<'a> {
     field_type: FieldType,
 }
 
+impl FieldType {
+    pub fn detect_type(field_str: &str) -> FieldType {
+	if field_str.len() == 0 {
+	    return FieldType::Invalid
+	}
+
+	return match field_str.as_bytes()[0] {
+	    b'@' => return FieldType::ID,
+	    b'#' => return FieldType::Flags,
+	    b':' => match field_str.chars().filter(|c| *c == ':').count() {
+		0 | 1 => FieldType::Invalid,
+		_    => FieldType::Attribute,
+	    }
+	    _   => return FieldType::Title,
+	}
+    }
+}
+
 pub struct TagItem {
     id: TagID,
     tag_line: String,
@@ -180,7 +198,7 @@ impl TagItem {
 
 	for pipe_str in pipe_split {
 	    let field_str = pipe_str;
-	    let field_type = FieldType::Invalid;
+	    let field_type = FieldType::detect_type(field_str);
 	    let field = TagField { field_str, field_type };
 	    fields.push(field);
 	}
