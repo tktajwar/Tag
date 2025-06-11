@@ -154,33 +154,28 @@ impl TagID {
     }
 }
 
-pub enum FieldType {
+pub enum TagField<'a> {
     Invalid,
-    ID,
-    Title,
-    Flags,
-    Attribute,
+    ID(&'a str),
+    Title(&'a str),
+    Flags(&'a str),
+    Attribute(&'a str),
 }
 
-pub struct TagField<'a> {
-    field_str: &'a str,
-    field_type: FieldType,
-}
-
-impl FieldType {
-    pub fn detect_type(field_str: &str) -> FieldType {
+impl <'a>TagField<'a> {
+    fn from (field_str: &'a str) -> TagField<'a> {
 	if field_str.len() == 0 {
-	    return FieldType::Invalid
+	    return TagField::Invalid
 	}
 
 	return match field_str.as_bytes()[0] {
-	    b'@' => return FieldType::ID,
-	    b'#' => return FieldType::Flags,
+	    b'@' => TagField::ID(field_str),
+	    b'#' => TagField::Flags(field_str),
 	    b':' => match field_str.chars().filter(|c| *c == ':').count() {
-		0 | 1 => FieldType::Invalid,
-		_    => FieldType::Attribute,
+		0 | 1 => TagField::Invalid,
+		_    => TagField::Attribute(field_str),
 	    }
-	    _   => return FieldType::Title,
+	    _   => TagField::Title(field_str),
 	}
     }
 }
@@ -194,12 +189,10 @@ impl TagItem {
     pub fn fields(&self) -> Vec<TagField> {
 	let mut fields = Vec::new();
 
-	let pipe_split = self.tag_line.split("|").map(|x| x.trim());
+	let field_split = self.tag_line.split("|").map(|x| x.trim());
 
-	for pipe_str in pipe_split {
-	    let field_str = pipe_str;
-	    let field_type = FieldType::detect_type(field_str);
-	    let field = TagField { field_str, field_type };
+	for field_str in field_split {
+	    let field = TagField::from(field_str);
 	    fields.push(field);
 	}
 
