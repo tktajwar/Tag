@@ -1,0 +1,215 @@
+#+TITLE: Tag Project Todo List
+#+TODO: TODO(t) NEXT(n) | DONE(d)
+#+PROPERTY: LOGGING nil
+
+* DONE TagID [5/5]
+
+The alphanumeric ID of the tag system.
+
+** DONE TagID struct
+
+Implementation of tag ID.
+
+** DONE TagID from(str) trait
+
+Generate ID from the given string literal.
+
+** DONE TagID display trait
+
+Display the ID.
+
+** DONE TagID generate_next(TagID) fn
+
+Generate a tag ID that should come after the given ID. For example, @1.0 -> @2.0
+
+** DONE TagID generate_between(TagID, TagID) fn
+
+Generate a tag ID between two given IDs. For example, (@1.0, @2.0) -> @1.1
+
+* TODO TagField [2/4]
+
+Field of an item. Contains the field string for all valid types.
+
+** DONE TagField enum
+
+Enum for different types of tag fields. 
+
+** DONE TagField from(str) trait
+
+Generate tag field from the given string literal.
+
+** TODO TagField flags fn
+
+Fetch all the flags if the field is a flags field.
+
+** TODO TagField attribute fn
+
+Return attribute and its value if the field is an attribute field.
+
+* TODO TagItem [4/7]
+
+Tag item. Contains fields. Must be given an ID field.
+
+** DONE TagItem struct
+
+Implementation of tag item structure.
+
+** DONE TagItem from(str) trait
+
+Generate tag item from the given string literal.
+
+** DONE TagItem display trait
+
+Display trait for tag item.
+
+** DONE TagItem fields fn
+
+Return a vector of all the fields in the item.
+
+** TODO TagItem flags fn
+
+Return all the flags of the item.
+
+** TODO TagItem attributes fn
+
+Return all the attributes of the item.
+
+** TODO TagItem modification functions [0/4]
+
+Modify the item.
+
+*** TODO TagItem add_flag(flag) fn
+
+Add flag to the item.
+
+*** TODO TagItem remove_flag(flag) fn
+
+Remove flag from the item.
+
+*** TODO TagItem set_attribute(attribute, value) fn
+
+Set the attribute of the item.
+
+*** TODO TagItem remove_attribute(attribute) fn
+
+Remove the attribute of the item.
+
+* TODO TagList [0/8]
+
+A structure to hold multiple tag items. Should provide fast single and sequential look-ups of given tag ID(s). Also, provide fast querying of items that have certain flags and/or attribute.
+
+** TODO TagList struct
+
+Structure for tag list.
+
+** TODO TagList insert(TagItem) fn
+
+Insert an item to the tag list.
+
+** TODO TagList access(TagID) fn
+
+Check/access a tag item.
+
+** TODO TagList where_flag(flag) fn
+
+Return an iterator of all the tag items in the list that has the given flag.
+
+** TODO TagList where_attribute(attribute, value) fn
+
+Return an iterator of all the tag items in the list that has attribute set to the given flag.
+
+** TODO TagList exclude_flag(flag) fn
+
+Exclude all the tag items in the list that has the given flag.
+
+** TODO TagList exclude_attribute(attribute, value) fn
+
+Exclude all the tag items in the list that has attribute set to the given flag.
+
+** TODO TagList modify(TagID, modification) fn
+
+Modify an item in the list.
+
+* TODO File I/O [0/4]
+
+Handling Tagfile.
+
+** TODO Read a Tagfile
+
+Read TagList from the disk.
+
+** TODO Write to Tagfile
+
+Write TagList back to the disk.
+
+** TODO Helper file
+
+A binary file that's used to speed up tag operation.
+
+** TODO Syncronize Tagfile
+
+If the Tagfile was manually modified, syncronize the helper file.
+
+* TODO Command-line interface [0/5]
+
+Command-line commands.
+
+** TODO "generate" commands [0/2]
+
+For experimenting with TagID. Lets you run generate functions from the CLI.
+
+*** TODO generate next (TagID) command
+
+Given a TagID as argument or standard input, generate the next one.
+
+*** TODO generate between (TagID, TagID) command
+
+Given two TagID as arguments or standard input, generate one between them.
+
+** TODO "where" command [0/2]
+
+Given a range of conditions, return the TagID of items that match them all.
+
+*** TODO flag(s) rule
+
+Must have the given flag(s).
+
+*** TODO attribute: value rule
+
+Must have the attribute set to the given value.
+
+** TODO "exclude" command [0/2]
+
+Given a range of conditions, exclude the TagID of items that match those conditions.
+
+*** TODO flags(s) exclusion rule
+
+Exclude items with the given flag(s).
+
+*** TODO attribute: value exclusion rule
+
+Exclude items that has attribute set to the given value.
+
+** TODO "view" command
+
+Given a list of TagID as argument or standard input, print out their taglines.
+
+** TODO "insert" commands [0/4]
+
+Insert new items to the list.
+
+*** TODO insert TagID command
+
+Generate and insert a new item with the given TagID to its appropriate position.
+
+*** TODO insert first command
+
+Generate and insert a new item at the beginning of the list with an appropriate TagID.
+
+*** TODO insert last command
+
+Generate and insert a new item at the end of the list with an appropriate TagID.
+
+*** TODO insert after command
+
+Generate and insert a new item after a given existing item with an appropriate TagID.
