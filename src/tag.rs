@@ -1,4 +1,5 @@
 use std::fmt;
+use regex::Regex;
 
 #[derive(PartialEq, PartialOrd)]
 pub struct TagID {
@@ -154,6 +155,8 @@ impl TagID {
     }
 }
 
+#[derive(PartialEq)]
+#[derive(Debug)]
 pub enum TagField<'a> {
     Invalid,
     ID(&'a str),
@@ -169,12 +172,30 @@ impl <'a>TagField<'a> {
 	}
 
 	return match field_str.as_bytes()[0] {
-	    b'@' => TagField::ID(field_str),
-	    b'#' => TagField::Flags(field_str),
-	    b':' => match field_str.chars().filter(|c| *c == ':').count() {
-		0 | 1 => TagField::Invalid,
-		_    => TagField::Attribute(field_str),
-	    }
+	    b'@' => {
+		let re = Regex::new(r"^@[0-9a-zA-Z]+\.[0-9a-zA-Z]*$").unwrap();
+		if re.is_match(field_str) {
+		    TagField::ID(field_str)
+		} else {
+		    TagField::Invalid
+		}
+	    },
+	    b'#' => {
+		let re = Regex::new(r"^#[0-9a-zA-Z_\-]+(\s*#[0-9a-zA-Z_\-]*)*$").unwrap();
+		if re.is_match(field_str) {
+		    TagField::Flags(field_str)
+		} else {
+		    TagField::Invalid
+		}
+	    },
+	    b':' => {
+		let re = Regex::new(r"^:[0-9a-zA-Z]+:[0-9a-zA-Z\s]*$").unwrap();
+		if re.is_match(field_str) {
+		    TagField::Attribute(field_str)
+		} else {
+		    TagField::Invalid
+		}
+	    },
 	    _   => TagField::Title(field_str),
 	}
     }
