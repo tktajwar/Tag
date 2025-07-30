@@ -199,6 +199,16 @@ impl <'a>TagField<'a> {
 	    _   => TagField::Title(field_str),
 	}
     }
+
+    pub fn flags (&self) -> Option<Vec<String>> {
+	let re = Regex::new(r"#[0-9a-zA-Z_\-]+").unwrap();
+	match self {
+	    TagField::Flags(field_str) => Some(re.find_iter(field_str)
+					       .map(|m| m.as_str().to_string())
+					       .collect()),
+	    _ => None,
+	}
+    }
 }
 
 pub struct TagItem {
@@ -218,6 +228,23 @@ impl TagItem {
 	}
 
 	fields
+    }
+
+    pub fn flags(&self) -> Option<Vec<String>> {
+	let mut flags: Vec<String> = Vec::new();
+
+	for field in self.fields() {
+	    match field.flags() {
+		Some(new_flags) => flags.extend(new_flags.to_owned()),
+		None => (),
+	    }
+	}
+
+	if flags.len() != 0 {
+	    Some(flags)
+	} else {
+	    None
+	}
     }
 }
 

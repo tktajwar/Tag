@@ -26,7 +26,7 @@ Generate a tag ID that should come after the given ID. For example, @1.0 -> @2.0
 
 Generate a tag ID between two given IDs. For example, (@1.0, @2.0) -> @1.1
 
-* TODO TagField [2/4]
+* TODO TagField [3/4]
 
 Field of an item. Contains the field string for all valid types.
 
@@ -38,7 +38,7 @@ Enum for different types of tag fields.
 
 Generate tag field from the given string literal.
 
-** TODO TagField flags fn
+** DONE TagField flags fn
 
 Fetch all the flags if the field is a flags field.
 
@@ -46,7 +46,7 @@ Fetch all the flags if the field is a flags field.
 
 Return attribute and its value if the field is an attribute field.
 
-* TODO TagItem [4/7]
+* TODO TagItem [5/7]
 
 Tag item. Contains fields. Must be given an ID field.
 
@@ -66,7 +66,7 @@ Display trait for tag item.
 
 Return a vector of all the fields in the item.
 
-** TODO TagItem flags fn
+** DONE TagItem flags fn
 
 Return all the flags of the item.
 

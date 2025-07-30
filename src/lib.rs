@@ -30,4 +30,21 @@ mod tests {
 	assert_eq!(fields[5], TagField::Flags("#valid-flag"));
 	assert_eq!(fields[6], TagField::Invalid);
     }
+
+    #[test]
+    fn tag_flags() {
+	let a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :invalid | #valid-flag | #inva!!lid");
+	let fields = a.fields();
+	assert_eq!(fields[2].flags(), Some(vec!["#hello".to_string(),
+						"#world".to_string(),
+	]));
+	assert_eq!(fields[3].flags(), None);
+	assert_eq!(a.flags(), Some(vec!["#hello".to_string(),
+					"#world".to_string(),
+					"#valid-flag".to_string(),
+	]));
+
+	let b = TagItem::from("@1.0 | Item with no flags");
+	assert_eq!(b.flags(), None);
+    }
 }
