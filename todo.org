@@ -45,7 +45,7 @@ Fetch all the flags if the field is a flags field.
 
 Return attribute and its value if the field is an attribute field.
 
-* TODO TagItem [5/7]
+* TODO TagItem [6/7]
 
 Tag item. Contains fields. Must be given an ID field.
 
@@ -69,7 +69,7 @@ Return a vector of all the fields in the item.
 
 Return all the flags of the item.
 
-** TODO TagItem attributes fn
+** DONE TagItem attributes fn
 
 Return all the attributes of the item.
 

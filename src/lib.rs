@@ -63,5 +63,11 @@ mod tests {
 							  Some("code".to_string()))));
 	assert_eq!(fields[4].attribute_key_value(), Some((Some(":null:".to_string()),
 							  None)));
+	assert_eq!(a.attributes(), Some(vec![
+	    (Some(":src:".to_string()), Some("code".to_string())),
+	    (Some(":null:".to_string()), None),
+	]));
+	let b = TagItem::from("@1.0 | Item with no attributes");
+	assert_eq!(b.attributes(), None);
     }
 }

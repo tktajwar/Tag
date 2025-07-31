@@ -301,6 +301,23 @@ impl TagItem {
 	    None
 	}
     }
+
+    pub fn attributes(&self) -> Option<Vec<(Option<String>,Option<String>)>> {
+	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
+
+	for field in self.fields() {
+	    match field.attribute_key_value() {
+		Some(attribute_key_value) => attributes.push(attribute_key_value),
+		None => (),
+	    }
+	}
+
+	if attributes.len() != 0 {
+	    Some(attributes)
+	} else {
+	    None
+	}
+    }
 }
 
 impl From<&str> for TagItem {
