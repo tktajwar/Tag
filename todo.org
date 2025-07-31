@@ -25,7 +25,7 @@ Generate a tag ID that should come after the given ID. For example, @1.0 -> @2.0
 
 Generate a tag ID between two given IDs. For example, (@1.0, @2.0) -> @1.1
 
-* TODO TagField [3/4]
+* DONE TagField [4/4]
 
 Field of an item. Contains the field string for all valid types.
 
@@ -41,7 +41,7 @@ Generate tag field from the given string literal.
 
 Fetch all the flags if the field is a flags field.
 
-** TODO TagField attribute fn
+** DONE TagField attribute fn
 
 Return attribute and its value if the field is an attribute field.
 

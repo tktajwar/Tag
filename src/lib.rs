@@ -58,5 +58,10 @@ mod tests {
 	assert_eq!(fields[3].attribute_value(), Some("code".to_string()));
 	assert_eq!(fields[4].attribute_key(), Some(":null:".to_string()));
 	assert_eq!(fields[4].attribute_value(), None);
+	assert_eq!(fields[1].attribute_key_value(), None);
+	assert_eq!(fields[3].attribute_key_value(), Some((Some(":src:".to_string()),
+							  Some("code".to_string()))));
+	assert_eq!(fields[4].attribute_key_value(), Some((Some(":null:".to_string()),
+							  None)));
     }
 }
