@@ -209,6 +209,37 @@ impl <'a>TagField<'a> {
 	    _ => None,
 	}
     }
+
+    pub fn attribute_key(&self) -> Option<String> {
+	let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:").unwrap();
+	match self {
+	    TagField::Attribute(field_str) => {
+		if let Some(key) = re.find(field_str) {
+		    Some(key.as_str().to_string())
+		} else {
+		    None
+		}
+	    },
+	    _ => None,
+	}
+    }
+
+    pub fn attribute_value(&self) -> Option<String> {
+	let re = Regex::new(r"^:[0-9a-zA-Z_\-]+:\s*([0-9a-zA-Z_\-\s]+$)").unwrap();
+	match self {
+	    TagField::Attribute(field_str) => {
+		let Some(captures) = re.captures(field_str) else {
+		    return None
+		};
+		if let Some(value) = captures.get(1) {
+		    Some(value.as_str().to_string())
+		} else {
+		    None
+		}
+	    },
+	    _ => None,
+	}
+    }
 }
 
 pub struct TagItem {

@@ -47,4 +47,16 @@ mod tests {
 	let b = TagItem::from("@1.0 | Item with no flags");
 	assert_eq!(b.flags(), None);
     }
+
+    #[test]
+    fn tag_attributes() {
+	let a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
+	let fields = a.fields();
+	assert_eq!(fields[1].attribute_key(), None);
+	assert_eq!(fields[1].attribute_value(), None);
+	assert_eq!(fields[3].attribute_key(), Some(":src:".to_string()));
+	assert_eq!(fields[3].attribute_value(), Some("code".to_string()));
+	assert_eq!(fields[4].attribute_key(), Some(":null:".to_string()));
+	assert_eq!(fields[4].attribute_value(), None);
+    }
 }
