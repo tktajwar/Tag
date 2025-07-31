@@ -189,7 +189,7 @@ impl <'a>TagField<'a> {
 		}
 	    },
 	    b':' => {
-		let re = Regex::new(r"^:[0-9a-zA-Z]+:[0-9a-zA-Z\s]*$").unwrap();
+		let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:[0-9a-zA-Z_\-\s]*$").unwrap();
 		if re.is_match(field_str) {
 		    TagField::Attribute(field_str)
 		} else {
