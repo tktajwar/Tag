@@ -1,5 +1,4 @@
 #+TITLE: Tag Project Todo List
-#+TODO: TODO(t) NEXT(n) | DONE(d)
 #+PROPERTY: LOGGING nil
 
 * DONE TagID [5/5]
