@@ -89,7 +89,7 @@ Return true if the item has the flag, otherwise return false.
 
 Return the (key, value) attribute if the item has it, otherwise return None.
 
-*** TODO TagItem has_attribute(attribute) fn
+*** TODO TagItem has_attribute(attribute_key) fn
 
 Return true if the item has the attribute, otherwise return false.
 
@@ -109,11 +109,11 @@ Add flag to the item.
 
 Remove flag from the item.
 
-*** TODO TagItem set_attribute(attribute, value) fn
+*** TODO TagItem set_attribute(key, value) fn
 
 Set the attribute of the item.
 
-*** TODO TagItem remove_attribute(attribute) fn
+*** TODO TagItem remove_attribute(key) fn
 
 Remove the attribute of the item.
 
@@ -137,7 +137,7 @@ Check/access a tag item.
 
 Return an iterator of all the tag items in the list that has the given flag.
 
-** TODO TagList where_attribute(attribute, value) fn
+** TODO TagList where_attribute(key, value) fn
 
 Return an iterator of all the tag items in the list that has attribute set to the given flag.
 
@@ -145,7 +145,7 @@ Return an iterator of all the tag items in the list that has attribute set to th
 
 Exclude all the tag items in the list that has the given flag.
 
-** TODO TagList exclude_attribute(attribute, value) fn
+** TODO TagList exclude_attribute(key, value) fn
 
 Exclude all the tag items in the list that has attribute set to the given flag.
 
