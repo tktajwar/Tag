@@ -84,9 +84,17 @@ mod tests {
 	assert_eq!(a.fetch_attribute(":src:".to_string()), Some((Some(":src:".to_string()),
 								 Some("code".to_string()))));
 	assert!(a.has_attribute(":null:".to_string()));
+	assert!(a.match_attribute((Some(":src:".to_string()),
+				   Some("code".to_string()))));
+	assert!(!(a.match_attribute((Some(":src:".to_string()),
+				   Some("unkown".to_string())))));
+	assert!(a.match_attribute((Some(":null:".to_string()),
+				   None)));
 	let b = TagItem::from("@1.0 | Item with no attributes");
 	assert_eq!(b.attributes(), None);
 	assert_eq!(b.fetch_attribute(":src:".to_string()), None);
 	assert!(!(b.has_attribute(":null:".to_string())));
+	assert!(!(b.match_attribute((Some(":src:".to_string()),
+				   Some("code".to_string())))));
     }
 }

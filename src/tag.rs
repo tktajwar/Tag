@@ -354,6 +354,16 @@ impl TagItem {
     pub fn has_attribute(&self, key: String) -> bool {
 	self.fetch_attribute(key) != None
     }
+
+    pub fn match_attribute(&self, attribute: (Option<String>, Option<String>)) -> bool {
+	let Some(ref key) = attribute.0 else {
+	    return false;
+	};
+	let Some(attribute_to_fetch) = self.fetch_attribute(key.to_string()) else {
+	    return false;
+	};
+	attribute_to_fetch == attribute
+    }
 }
 
 impl From<&str> for TagItem {

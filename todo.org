@@ -45,7 +45,7 @@ Fetch all the flags if the field is a flags field.
 
 Return attribute and its value if the field is an attribute field.
 
-* TODO TagItem [6/8]
+* TODO TagItem [7/8]
 
 Tag item. Contains fields. Must be given an ID field.
 
@@ -73,7 +73,7 @@ Return all the flags of the item.
 
 Return all the attributes of the item.
 
-** TODO TagItem fetch functions [3/4]
+** DONE TagItem fetch functions [4/4]
 
 Check for flags and attributes in an item.
 
@@ -89,7 +89,7 @@ Return the (key, value) attribute if the item has it, otherwise return None.
 
 Return true if the item has the attribute, otherwise return false.
 
-*** TODO TagItem match_attribute(key, value) fn
+*** DONE TagItem match_attribute(key, value) fn
 
 Return true if the item has the attribute and the key-value matches, otherwise return false.
 
