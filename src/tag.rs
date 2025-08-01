@@ -335,6 +335,25 @@ impl TagItem {
 	    None
 	}
     }
+
+    pub fn fetch_attribute(&self, key: String) -> Option<(Option<String>,Option<String>)> {
+	if let Some(attributes) = self.attributes() {
+	    for attribute in attributes {
+		if let Some(ref attribute_key) = attribute.0 {
+		    if *attribute_key == key {
+			return Some(attribute)
+		    }
+		}
+	    }
+	    None
+	} else {
+	    None
+	}
+    }
+
+    pub fn has_attribute(&self, key: String) -> bool {
+	self.fetch_attribute(key) != None
+    }
 }
 
 impl From<&str> for TagItem {

@@ -73,7 +73,7 @@ Return all the flags of the item.
 
 Return all the attributes of the item.
 
-** TODO TagItem fetch functions [1/5]
+** TODO TagItem fetch functions [3/4]
 
 Check for flags and attributes in an item.
 
@@ -81,11 +81,11 @@ Check for flags and attributes in an item.
 
 Return true if the item has the flag, otherwise return false.
 
-*** TODO TagItem fetch_attribute(attribute_key) fn
+*** DONE TagItem fetch_attribute(attribute_key) fn
 
 Return the (key, value) attribute if the item has it, otherwise return None.
 
-*** TODO TagItem has_attribute(attribute_key) fn
+*** DONE TagItem has_attribute(attribute_key) fn
 
 Return true if the item has the attribute, otherwise return false.
 
