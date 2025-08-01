@@ -302,6 +302,23 @@ impl TagItem {
 	}
     }
 
+    pub fn has_flag(&self, flag: String) -> bool {
+	if let Some(flags) = self.flags() {
+	    flags.contains(&flag)
+	} else {
+	    false
+	}
+    }
+
+    pub fn has_flags(&self, flags: Vec<String>) -> bool {
+	for flag in flags {
+	    if !(self.has_flag(flag)) {
+		return false;
+	    }
+	}
+	true
+    }
+
     pub fn attributes(&self) -> Option<Vec<(Option<String>,Option<String>)>> {
 	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
 

@@ -43,9 +43,23 @@ mod tests {
 					"#world".to_string(),
 					"#valid-flag".to_string(),
 	]));
+	assert!(a.has_flag("#hello".to_string()));
+	assert!(a.has_flag("#valid-flag".to_string()));
+	assert!(!(a.has_flag("#test".to_string())));
+	assert!(a.has_flags(vec![
+	    "#hello".to_string(),
+	    "#world".to_string(),
+	    "#valid-flag".to_string(),
+	]));
 
 	let b = TagItem::from("@1.0 | Item with no flags");
 	assert_eq!(b.flags(), None);
+	assert!(!(b.has_flag("#hello".to_string())));
+	assert!(!(b.has_flags(vec![
+	    "#hello".to_string(),
+	    "#world".to_string(),
+	    "#valid-flag".to_string(),
+	])));
     }
 
     #[test]
