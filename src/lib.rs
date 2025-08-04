@@ -100,7 +100,7 @@ mod tests {
 
     #[test]
     fn tag_flags_modification() {
-	let a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
+	let mut a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
 	let fields = a.fields();
 	assert_eq!(fields[2].concat_flags("#rust #program".to_string()),
 		   Some("#hello #world #rust #program".to_string()));
@@ -109,5 +109,17 @@ mod tests {
 		   Some("#hello".to_string()));
 	assert_eq!(fields[2].sincat_flags("#hello #world".to_string()), None);
 	assert_eq!(fields[3].sincat_flags("#world".to_string()), None);
+
+	assert_eq!(a.flags(), Some(vec![
+	    "#hello".to_string(),
+	    "#world".to_string(),
+	]));
+	a.add_flags_to_field_no("#new #flags".to_string(), 2);
+	assert_eq!(a.flags(), Some(vec![
+	    "#hello".to_string(),
+	    "#world".to_string(),
+	    "#new".to_string(),
+	    "#flags".to_string(),
+	]));
     }
 }
