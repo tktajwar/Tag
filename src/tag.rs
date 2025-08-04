@@ -210,6 +210,49 @@ impl <'a>TagField<'a> {
 	}
     }
 
+    pub fn concat_flags(&self, flags: String) -> Option<String> {
+	let re = Regex::new(r"^#[0-9a-zA-Z_\-]+(\s#[0-9a-zA-Z_\-]+)*$").unwrap();
+
+	let Some(flags) = re.find(flags.as_str()) else {
+	    return None;
+	};
+	let con_flags = flags.as_str();
+
+	match self {
+	    TagField::Flags(field_str) => Some(field_str.to_string() + " " + con_flags),
+	    _ => None,
+	}
+    }
+
+    pub fn sincat_flags(&self, flags: String) -> Option<String> {
+	let re = Regex::new(r"(#[0-9a-zA-Z_\-]+)").unwrap();
+	let sin_flags: Vec<String> = re.find_iter(&flags)
+	    .map(|m| m.as_str().to_string())
+	    .collect();
+
+	match self {
+	    TagField::Flags(_) => (),
+	    _ => return None,
+	};
+
+	let mut flags_sinned = String::new();
+	let Some(old_flags) = self.flags() else {
+	    return None;
+	};
+	for flag in old_flags {
+	    if !sin_flags.contains(&flag) {
+		flags_sinned.push_str(&(flag + " "));
+	    }
+	}
+
+	if flags_sinned.len() > 0 {
+	    flags_sinned.pop();
+	    Some(flags_sinned)
+	} else {
+	    None
+	}
+    }
+
     pub fn attribute_key(&self) -> Option<String> {
 	let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:").unwrap();
 	match self {

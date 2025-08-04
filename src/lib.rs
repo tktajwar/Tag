@@ -97,4 +97,17 @@ mod tests {
 	assert!(!(b.match_attribute((Some(":src:".to_string()),
 				   Some("code".to_string())))));
     }
+
+    #[test]
+    fn tag_flags_modification() {
+	let a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
+	let fields = a.fields();
+	assert_eq!(fields[2].concat_flags("#rust #program".to_string()),
+		   Some("#hello #world #rust #program".to_string()));
+	assert_eq!(fields[3].concat_flags("#rust #program".to_string()), None);
+	assert_eq!(fields[2].sincat_flags("#world".to_string()),
+		   Some("#hello".to_string()));
+	assert_eq!(fields[2].sincat_flags("#hello #world".to_string()), None);
+	assert_eq!(fields[3].sincat_flags("#world".to_string()), None);
+    }
 }
