@@ -158,7 +158,7 @@ impl TagID {
 #[derive(PartialEq)]
 #[derive(Debug)]
 pub enum TagField<'a> {
-    Invalid,
+    Invalid(&'a str),
     ID(&'a str),
     Title(&'a str),
     Flags(&'a str),
@@ -168,7 +168,7 @@ pub enum TagField<'a> {
 impl <'a>TagField<'a> {
     fn from (field_str: &'a str) -> TagField<'a> {
 	if field_str.len() == 0 {
-	    return TagField::Invalid
+	    return TagField::Invalid(field_str)
 	}
 
 	return match field_str.as_bytes()[0] {
@@ -177,7 +177,7 @@ impl <'a>TagField<'a> {
 		if re.is_match(field_str) {
 		    TagField::ID(field_str)
 		} else {
-		    TagField::Invalid
+		    TagField::Invalid(field_str)
 		}
 	    },
 	    b'#' => {
@@ -185,7 +185,7 @@ impl <'a>TagField<'a> {
 		if re.is_match(field_str) {
 		    TagField::Flags(field_str)
 		} else {
-		    TagField::Invalid
+		    TagField::Invalid(field_str)
 		}
 	    },
 	    b':' => {
@@ -193,7 +193,7 @@ impl <'a>TagField<'a> {
 		if re.is_match(field_str) {
 		    TagField::Attribute(field_str)
 		} else {
-		    TagField::Invalid
+		    TagField::Invalid(field_str)
 		}
 	    },
 	    _   => TagField::Title(field_str),
@@ -373,8 +373,8 @@ impl TagItem {
 		TagField::ID(field_str) |
 		TagField::Title(field_str) |
 		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) => new_tagline.push_str(field_str),
-		TagField::Invalid => (),
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
 	    new_tagline.push_str(" | ");
 	}
@@ -385,8 +385,8 @@ impl TagItem {
 		TagField::ID(field_str) |
 		TagField::Title(field_str) |
 		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) => new_tagline.push_str(field_str),
-		TagField::Invalid => (),
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
 	}
 	self.tag_line = new_tagline;
@@ -403,8 +403,8 @@ impl TagItem {
 		TagField::ID(field_str) |
 		TagField::Title(field_str) |
 		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) => new_tagline.push_str(field_str),
-		TagField::Invalid => (),
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
 	    new_tagline.push_str(" | ");
 	}
@@ -415,8 +415,8 @@ impl TagItem {
 		TagField::ID(field_str) |
 		TagField::Title(field_str) |
 		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) => new_tagline.push_str(field_str),
-		TagField::Invalid => (),
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
 	}
 	self.tag_line = new_tagline;

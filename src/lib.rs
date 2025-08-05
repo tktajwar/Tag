@@ -26,9 +26,9 @@ mod tests {
 	assert_eq!(fields[1], TagField::Title("My Title"));
 	assert_eq!(fields[2], TagField::Flags("#hello #world"));
 	assert_eq!(fields[3], TagField::Attribute(":src: code"));
-	assert_eq!(fields[4], TagField::Invalid);
+	assert_eq!(fields[4], TagField::Invalid(":invalid"));
 	assert_eq!(fields[5], TagField::Flags("#valid-flag"));
-	assert_eq!(fields[6], TagField::Invalid);
+	assert_eq!(fields[6], TagField::Invalid("#inva!!lid"));
     }
 
     #[test]
