@@ -101,6 +101,7 @@ mod tests {
     #[test]
     fn tag_flags_modification() {
 	let mut a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
+	let mut b = TagItem::from("@2.0 | Multiple flag fields | #A #B | #B #C");
 	let fields = a.fields();
 	assert_eq!(fields[2].concat_flags("#rust #program"),
 		   Some("#hello #world #rust #program".to_string()));
@@ -133,5 +134,25 @@ mod tests {
 	    "#hola".to_string(),
 	    "#renew".to_string(),
 	]));
+	a.remove_flags("#flags #renew");
+	assert_eq!(a.flags(), Some(vec![
+	    "#world".to_string(),
+	    "#hola".to_string(),
+	]));
+	b.add_flags("#D");
+	assert_eq!(b.flags(), Some(vec![
+	    "#A".to_string(),
+	    "#B".to_string(),
+	    "#B".to_string(),
+	    "#C".to_string(),
+	    "#D".to_string(),
+	]));
+	b.remove_flags("#B");
+	assert_eq!(b.flags(), Some(vec![
+	    "#A".to_string(),
+	    "#C".to_string(),
+	    "#D".to_string(),
+	]));
+	assert_eq!(b.fields()[2].flags(), Some(vec!["#A".to_string(),]));
     }
 }

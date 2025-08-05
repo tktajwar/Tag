@@ -434,6 +434,14 @@ impl TagItem {
 	self.tag_line.push_str(&flags);
     }
 
+    pub fn remove_flags(&mut self, flags: &str) {
+	for field_no in (0..self.fields().len()).rev() {
+	    if let TagField::Flags(_) = self.fields()[field_no] {
+		self.remove_flags_from_field_no(flags, field_no);
+	    }
+	}
+    }
+
     pub fn attributes(&self) -> Option<Vec<(Option<String>,Option<String>)>> {
 	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
 
