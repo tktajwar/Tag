@@ -121,5 +121,10 @@ mod tests {
 	    "#new".to_string(),
 	    "#flags".to_string(),
 	]));
+	a.remove_flags_from_field_no("#hello #new".to_string(), 2);
+	assert_eq!(a.flags(), Some(vec![
+	    "#world".to_string(),
+	    "#flags".to_string(),
+	]));
     }
 }

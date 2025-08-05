@@ -392,6 +392,36 @@ impl TagItem {
 	self.tag_line = new_tagline;
     }
 
+    pub fn remove_flags_from_field_no(&mut self, flags: String, field_no: usize) {
+	let fields = self.fields();
+	let Some(old_field) = fields.get(field_no) else {return};
+	let Some(new_field) = old_field.sincat_flags(flags) else {return};
+
+	let mut new_tagline = String::new();
+	for field in &fields[ ..field_no] {
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) => new_tagline.push_str(field_str),
+		TagField::Invalid => (),
+	    }
+	    new_tagline.push_str(" | ");
+	}
+	new_tagline.push_str(&new_field);
+	for field in &fields[field_no+1.. ] {
+	    new_tagline.push_str(" | ");
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) => new_tagline.push_str(field_str),
+		TagField::Invalid => (),
+	    }
+	}
+	self.tag_line = new_tagline;
+    }
+
     pub fn attributes(&self) -> Option<Vec<(Option<String>,Option<String>)>> {
 	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
 
