@@ -189,7 +189,7 @@ impl <'a>TagField<'a> {
 		}
 	    },
 	    b':' => {
-		let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:[0-9a-zA-Z_\-\s]*$").unwrap();
+		let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:[0-9a-zA-Z_\-\.\,\s]*$").unwrap();
 		if re.is_match(field_str) {
 		    TagField::Attribute(field_str)
 		} else {
@@ -268,7 +268,7 @@ impl <'a>TagField<'a> {
     }
 
     pub fn attribute_value(&self) -> Option<String> {
-	let re = Regex::new(r"^:[0-9a-zA-Z_\-]+:\s*([0-9a-zA-Z_\-\s]+$)").unwrap();
+	let re = Regex::new(r"^:[0-9a-zA-Z_\-]+:\s*([0-9a-zA-Z_\-\.\,\s]+$)").unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
 		let Some(captures) = re.captures(field_str) else {
@@ -285,7 +285,7 @@ impl <'a>TagField<'a> {
     }
 
     pub fn attribute_key_value(&self) -> Option<(Option<String>,Option<String>)> {
-	let re = Regex::new(r"^(:[0-9a-zA-Z_\-]+:)\s*([0-9a-zA-Z_\-\s]+$)?").unwrap();
+	let re = Regex::new(r"^(:[0-9a-zA-Z_\-]+:)\s*([0-9a-zA-Z_\-\.\,\s]+$)?").unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
 		let Some(captures) = re.captures(field_str) else {
