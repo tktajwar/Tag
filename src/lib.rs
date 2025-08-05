@@ -102,31 +102,31 @@ mod tests {
     fn tag_flags_modification() {
 	let mut a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
 	let fields = a.fields();
-	assert_eq!(fields[2].concat_flags("#rust #program".to_string()),
+	assert_eq!(fields[2].concat_flags("#rust #program"),
 		   Some("#hello #world #rust #program".to_string()));
-	assert_eq!(fields[3].concat_flags("#rust #program".to_string()), None);
-	assert_eq!(fields[2].sincat_flags("#world".to_string()),
+	assert_eq!(fields[3].concat_flags("#rust #program"), None);
+	assert_eq!(fields[2].sincat_flags("#world"),
 		   Some("#hello".to_string()));
-	assert_eq!(fields[2].sincat_flags("#hello #world".to_string()), None);
-	assert_eq!(fields[3].sincat_flags("#world".to_string()), None);
+	assert_eq!(fields[2].sincat_flags("#hello #world"), None);
+	assert_eq!(fields[3].sincat_flags("#world"), None);
 
 	assert_eq!(a.flags(), Some(vec![
 	    "#hello".to_string(),
 	    "#world".to_string(),
 	]));
-	a.add_flags_to_field_no("#new #flags".to_string(), 2);
+	a.add_flags_to_field_no("#new #flags", 2);
 	assert_eq!(a.flags(), Some(vec![
 	    "#hello".to_string(),
 	    "#world".to_string(),
 	    "#new".to_string(),
 	    "#flags".to_string(),
 	]));
-	a.remove_flags_from_field_no("#hello #new".to_string(), 2);
+	a.remove_flags_from_field_no("#hello #new", 2);
 	assert_eq!(a.flags(), Some(vec![
 	    "#world".to_string(),
 	    "#flags".to_string(),
 	]));
-	a.add_flags("#hola #renew".to_string());
+	a.add_flags("#hola #renew");
 	assert_eq!(a.flags(), Some(vec![
 	    "#world".to_string(),
 	    "#flags".to_string(),

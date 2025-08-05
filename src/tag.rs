@@ -210,10 +210,10 @@ impl <'a>TagField<'a> {
 	}
     }
 
-    pub fn concat_flags(&self, flags: String) -> Option<String> {
+    pub fn concat_flags(&self, flags: &str) -> Option<String> {
 	let re = Regex::new(r"^#[0-9a-zA-Z_\-]+(\s#[0-9a-zA-Z_\-]+)*$").unwrap();
 
-	let Some(flags) = re.find(flags.as_str()) else {
+	let Some(flags) = re.find(flags) else {
 	    return None;
 	};
 	let con_flags = flags.as_str();
@@ -224,7 +224,7 @@ impl <'a>TagField<'a> {
 	}
     }
 
-    pub fn sincat_flags(&self, flags: String) -> Option<String> {
+    pub fn sincat_flags(&self, flags: &str) -> Option<String> {
 	let re = Regex::new(r"(#[0-9a-zA-Z_\-]+)").unwrap();
 	let sin_flags: Vec<String> = re.find_iter(&flags)
 	    .map(|m| m.as_str().to_string())
@@ -362,7 +362,7 @@ impl TagItem {
 	true
     }
 
-    pub fn add_flags_to_field_no(&mut self, flags: String, field_no: usize) {
+    pub fn add_flags_to_field_no(&mut self, flags: &str, field_no: usize) {
 	let fields = self.fields();
 	let Some(old_field) = fields.get(field_no) else {return};
 	let Some(new_field) = old_field.concat_flags(flags) else {return};
@@ -392,7 +392,7 @@ impl TagItem {
 	self.tag_line = new_tagline;
     }
 
-    pub fn remove_flags_from_field_no(&mut self, flags: String, field_no: usize) {
+    pub fn remove_flags_from_field_no(&mut self, flags: &str, field_no: usize) {
 	let fields = self.fields();
 	let Some(old_field) = fields.get(field_no) else {return};
 	let Some(new_field) = old_field.sincat_flags(flags) else {return};
@@ -422,7 +422,7 @@ impl TagItem {
 	self.tag_line = new_tagline;
     }
 
-    pub fn add_flags(&mut self, flags: String) {
+    pub fn add_flags(&mut self, flags: &str) {
 	let fields = self.fields();
 	for field_no in (0..fields.len()).rev() {
 	    if let TagField::Flags(_) = fields[field_no] {
