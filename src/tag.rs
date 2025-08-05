@@ -487,6 +487,42 @@ impl TagItem {
 	};
 	attribute_to_fetch == attribute
     }
+
+    pub fn set_attribute_at_field_no(&mut self, attribute: (Option<&str>, Option<&str>), field_no: usize) {
+	let fields = self.fields();
+	let TagField::Attribute(_) = fields[field_no] else { return };
+	let mut new_tagline = String::new();
+	for field in &fields[ ..field_no] {
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	    new_tagline.push_str(" | ");
+	}
+	if let Some(attribute_key) = attribute.0 {
+	    new_tagline.push_str(":");
+	    new_tagline.push_str(attribute_key);
+	    new_tagline.push_str(":");
+	} else { return }
+	if let Some(attribute_val) = attribute.1 {
+	    new_tagline.push_str(" ");
+	    new_tagline.push_str(attribute_val);
+	}
+	for field in &fields[field_no+1.. ] {
+	    new_tagline.push_str(" | ");
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	}
+	self.tag_line = new_tagline;
+    }
 }
 
 impl From<&str> for TagItem {
