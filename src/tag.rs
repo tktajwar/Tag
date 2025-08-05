@@ -422,6 +422,18 @@ impl TagItem {
 	self.tag_line = new_tagline;
     }
 
+    pub fn add_flags(&mut self, flags: String) {
+	let fields = self.fields();
+	for field_no in (0..fields.len()).rev() {
+	    if let TagField::Flags(_) = fields[field_no] {
+		self.add_flags_to_field_no(flags, field_no);
+		return;
+	    }
+	}
+	self.tag_line.push_str(" | ");
+	self.tag_line.push_str(&flags);
+    }
+
     pub fn attributes(&self) -> Option<Vec<(Option<String>,Option<String>)>> {
 	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
 

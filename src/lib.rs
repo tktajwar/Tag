@@ -126,5 +126,12 @@ mod tests {
 	    "#world".to_string(),
 	    "#flags".to_string(),
 	]));
+	a.add_flags("#hola #renew".to_string());
+	assert_eq!(a.flags(), Some(vec![
+	    "#world".to_string(),
+	    "#flags".to_string(),
+	    "#hola".to_string(),
+	    "#renew".to_string(),
+	]));
     }
 }
