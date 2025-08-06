@@ -159,7 +159,7 @@ mod tests {
     #[test]
     fn tag_attributes_modification() {
 	let mut a = TagItem::from("@1.0 | My Title | #hello #world | :src: code | :null:");
-	a.set_attribute_at_field_no((Some("src"), Some("lib.rs")), 3);
+	a.set_attribute_at_field_no((Some(":src:"), Some("lib.rs")), 3);
 	println!("{}", a.fields()[3].attribute_key().unwrap());
 	assert!(a.match_attribute((Some(":src:".to_string()),
 				   Some("lib.rs".to_string()))));

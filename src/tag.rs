@@ -503,9 +503,9 @@ impl TagItem {
 	    new_tagline.push_str(" | ");
 	}
 	if let Some(attribute_key) = attribute.0 {
-	    new_tagline.push_str(":");
+	    if attribute_key.as_bytes()[0] != b':' { return };
+	    if attribute_key.as_bytes()[attribute_key.len()-1] != b':' { return };
 	    new_tagline.push_str(attribute_key);
-	    new_tagline.push_str(":");
 	} else { return }
 	if let Some(attribute_val) = attribute.1 {
 	    new_tagline.push_str(" ");
