@@ -492,6 +492,7 @@ impl TagItem {
 	let fields = self.fields();
 	let TagField::Attribute(_) = fields[field_no] else { return };
 	let mut new_tagline = String::new();
+
 	for field in &fields[ ..field_no] {
 	    match field {
 		TagField::ID(field_str) |
@@ -502,15 +503,18 @@ impl TagItem {
 	    }
 	    new_tagline.push_str(" | ");
 	}
+
 	if let Some(attribute_key) = attribute.0 {
 	    if attribute_key.as_bytes()[0] != b':' { return };
 	    if attribute_key.as_bytes()[attribute_key.len()-1] != b':' { return };
 	    new_tagline.push_str(attribute_key);
 	} else { return }
+
 	if let Some(attribute_val) = attribute.1 {
 	    new_tagline.push_str(" ");
 	    new_tagline.push_str(attribute_val);
 	}
+
 	for field in &fields[field_no+1.. ] {
 	    new_tagline.push_str(" | ");
 	    match field {
@@ -521,6 +525,7 @@ impl TagItem {
 		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
 	}
+
 	self.tag_line = new_tagline;
     }
 
