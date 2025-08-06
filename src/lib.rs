@@ -169,5 +169,9 @@ mod tests {
 	a.set_attribute((Some(":attr:"), Some("val")));
 	assert!(a.match_attribute((Some(":attr:".to_string()),
 				   Some("val".to_string()))));
+	a.remove_attribute(":attr:");
+	assert!(!(a.has_attribute(":attr:".to_string())));
+	a.remove_attribute(":null:");
+	assert!(!(a.has_attribute(":null:".to_string())));
     }
 }

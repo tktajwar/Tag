@@ -545,6 +545,36 @@ impl TagItem {
 	    self.tag_line.push_str(attribute_val);
 	}
     }
+
+    pub fn remove_attribute(&mut self, attribute_key: &str) {
+	let mut new_tagline = String::new();
+	let fields = &self.fields();
+
+	{
+	    let field = &fields[0];
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	}
+
+	for field in &fields[1.. ] {
+	    if field.attribute_key() == Some(attribute_key.to_string()) { continue }
+	    new_tagline.push_str(" | ");
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	}
+
+	self.tag_line = new_tagline;
+    }
 }
 
 impl From<&str> for TagItem {

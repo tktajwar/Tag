@@ -45,7 +45,7 @@ Fetch all the flags if the field is a flags field.
 
 Return attribute and its value if the field is an attribute field.
 
-* TODO TagItem [7/8]
+* DONE TagItem [8/8]
 
 Tag item. Contains fields. Must be given an ID field.
 
@@ -93,7 +93,7 @@ Return true if the item has the attribute, otherwise return false.
 
 Return true if the item has the attribute and the key-value matches, otherwise return false.
 
-** TODO TagItem modification functions [3/4]
+** DONE TagItem modification functions [4/4]
 
 Modify the item.
 
@@ -109,7 +109,7 @@ Remove flag from the item.
 
 Set the attribute of the item.
 
-*** TODO TagItem remove_attribute(key) fn
+*** DONE TagItem remove_attribute(key) fn
 
 Remove the attribute of the item.
 
