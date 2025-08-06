@@ -536,7 +536,6 @@ impl TagItem {
 
 	for field_no in 0..self.fields().len() {
 	    let field = &self.fields()[field_no];
-	    let TagField::Attribute(_) = field else { continue };
 	    if field.attribute_key() == Some(attribute_key.to_string()) {
 		self.set_attribute_at_field_no(attribute, field_no);
 		return;
