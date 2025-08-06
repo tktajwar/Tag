@@ -163,5 +163,11 @@ mod tests {
 	println!("{}", a.fields()[3].attribute_key().unwrap());
 	assert!(a.match_attribute((Some(":src:".to_string()),
 				   Some("lib.rs".to_string()))));
+	a.set_attribute((Some(":src:"), Some("code")));
+	assert!(a.match_attribute((Some(":src:".to_string()),
+				   Some("code".to_string()))));
+	a.set_attribute((Some(":attr:"), Some("val")));
+	assert!(a.match_attribute((Some(":attr:".to_string()),
+				   Some("val".to_string()))));
     }
 }

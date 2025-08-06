@@ -93,7 +93,7 @@ Return true if the item has the attribute, otherwise return false.
 
 Return true if the item has the attribute and the key-value matches, otherwise return false.
 
-** TODO TagItem modification functions [2/4]
+** TODO TagItem modification functions [3/4]
 
 Modify the item.
 
@@ -105,7 +105,7 @@ Add flag to the item.
 
 Remove flag from the item.
 
-*** TODO TagItem set_attribute(key, value) fn
+*** DONE TagItem set_attribute(key, value) fn
 
 Set the attribute of the item.
 

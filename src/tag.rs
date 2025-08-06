@@ -523,6 +523,28 @@ impl TagItem {
 	}
 	self.tag_line = new_tagline;
     }
+
+    pub fn set_attribute(&mut self, attribute: (Option<&str>, Option<&str>)) {
+	let Some(attribute_key) = attribute.0 else { return };
+	if attribute_key.as_bytes()[0] != b':' { return };
+	if attribute_key.as_bytes()[attribute_key.len()-1] != b':' { return };
+
+	for field_no in 0..self.fields().len() {
+	    let field = &self.fields()[field_no];
+	    let TagField::Attribute(_) = field else { continue };
+	    if field.attribute_key() == Some(attribute_key.to_string()) {
+		self.set_attribute_at_field_no(attribute, field_no);
+		return;
+	    }
+	}
+
+	self.tag_line.push_str(" | ");
+	self.tag_line.push_str(attribute_key);
+	if let Some(attribute_val) = attribute.1 {
+	    self.tag_line.push_str(" ");
+	    self.tag_line.push_str(attribute_val);
+	}
+    }
 }
 
 impl From<&str> for TagItem {
