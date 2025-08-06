@@ -3,6 +3,7 @@ mod tag;
 pub use crate::tag::TagID;
 pub use crate::tag::TagField;
 pub use crate::tag::TagItem;
+pub use crate::tag::TagMap;
 
 #[cfg(test)]
 mod tests {

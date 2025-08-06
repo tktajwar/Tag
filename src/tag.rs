@@ -1,7 +1,8 @@
 use std::fmt;
 use regex::Regex;
+use linked_hash_map::LinkedHashMap;
 
-#[derive(PartialEq, PartialOrd)]
+#[derive(PartialEq, PartialOrd, Eq, Hash)]
 pub struct TagID {
     exponent: usize,
     mantissa: String,
@@ -604,4 +605,8 @@ impl fmt::Display for TagItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 	write!(f, "{}", self.tag_line)
     }
+}
+
+pub struct TagMap<'a> {
+    map: LinkedHashMap<TagID, &'a str>,
 }
