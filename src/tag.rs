@@ -3,13 +3,12 @@ use std::fmt::Display;
 use regex::Regex;
 use linked_hash_map::LinkedHashMap;
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq)]
 pub enum TagListErrorKind {
     UnsortedTagList,
     DuplicateTagItems,
 }
 
-#[derive(Debug, Clone)]
 pub struct TagListError<'a> {
     kind: TagListErrorKind,
     line: &'a str,
