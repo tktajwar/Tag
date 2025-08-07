@@ -628,8 +628,8 @@ impl<'a> Display for TagListError<'a> {
 	    TagListErrorKind::UnsortedTagList => "Unsorted list of tag items\n",
 	    TagListErrorKind::DuplicateTagItems => "Duplicate tag items\n",
 	})?;
-	fmt.write_str(self.prev_line);
-	fmt.write_str("\n");
+	fmt.write_str(self.prev_line)?;
+	fmt.write_str("\n")?;
         fmt.write_str(self.line)
     }
 }
