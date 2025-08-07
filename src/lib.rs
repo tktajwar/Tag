@@ -174,4 +174,31 @@ mod tests {
 	a.remove_attribute(":null:");
 	assert!(!(a.has_attribute(":null:".to_string())));
     }
+
+    #[test]
+    fn tag_map() {
+	let tag_file = "\
+	@1.0  | First Item    | :file: introduction.txt\n\
+	@1.1  | Sub-item?     | :file: special.txt | #special\n\
+	@1.11 | Sub-sub-item? | :file: extra.txt   | #special\n\
+	@2.0  | Second Item   | :file: body.txt\n\
+	@3.0  | The End       | :file: credits.txt\
+	";
+	let tag_map = TagMap::try_from(tag_file);
+	assert!(tag_map.is_ok());
+
+	let tag_file_unsorted = "\
+	@2.0  | Second Item\n\
+	@1.0  | First Item\n\
+	";
+	let tag_map_unsorted = TagMap::try_from(tag_file_unsorted);
+	assert!(tag_map_unsorted.is_err());
+
+	let tag_file_with_duplicate = "\
+	@1.0  | First Item\n\
+	@1.0  | First Item\n\
+	";
+	let tag_map_with_duplicate = TagMap::try_from(tag_file_with_duplicate);
+	assert!(tag_map_with_duplicate.is_err());
+    }
 }

@@ -643,3 +643,35 @@ impl<'a> Display for TagListError<'a> {
 pub struct TagMap<'a> {
     map: LinkedHashMap<TagID, &'a str>,
 }
+
+impl<'a> TryFrom<&'a str> for TagMap<'a> {
+    type Error = TagListError<'a>;
+    fn try_from(file: &'a str) -> Result<Self, Self::Error> {
+	let mut map = LinkedHashMap::new();
+
+	for line in file.lines() {
+	    if line.as_bytes()[0] != b'@' { continue };
+	    let re = Regex::new(r"^(@[0-9a-zA-Z]+\.[0-9a-zA-Z]*).*$").unwrap();
+	    let Some(id_str) = re.find(line) else { continue };
+	    let tag_id = TagID::from(id_str.as_str());
+	    if let Some(last_item) = map.back() {
+		if *last_item.0 >= tag_id {
+		    let kind = {
+			if *last_item.0 > tag_id {
+			    TagListErrorKind::UnsortedTagListError
+			} else {
+			    TagListErrorKind::DuplicateTagItemsError
+			}
+		    };
+		    let prev_line = *last_item.1;
+		    return Err(TagListError {
+			kind, line, prev_line,
+		    });
+		};
+	    }
+	    map.insert(tag_id, line);
+	}
+
+	Ok( Self { map } )
+    }
+}
