@@ -3,6 +3,32 @@ use std::fmt::Display;
 use regex::Regex;
 use linked_hash_map::LinkedHashMap;
 
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub enum TagListErrorKind {
+    UnsortedTagList,
+    DuplicateTagItems,
+}
+
+#[derive(Debug, Clone)]
+pub struct TagListError<'a> {
+    kind: TagListErrorKind,
+    line: &'a str,
+    prev_line: &'a str,
+}
+
+impl<'a> Display for TagListError<'a> {
+    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>)
+	   -> core::result::Result<(), core::fmt::Error> {
+        fmt.write_str(match self.kind {
+	    TagListErrorKind::UnsortedTagList => "Unsorted list of tag items\n",
+	    TagListErrorKind::DuplicateTagItems => "Duplicate tag items\n",
+	})?;
+	fmt.write_str(self.prev_line)?;
+	fmt.write_str("\n")?;
+        fmt.write_str(self.line)
+    }
+}
+
 #[derive(PartialEq, PartialOrd, Eq, Hash)]
 pub struct TagID {
     exponent: usize,
@@ -605,32 +631,6 @@ impl From<&str> for TagItem {
 impl fmt::Display for TagItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 	write!(f, "{}", self.tag_line)
-    }
-}
-
-#[derive(Clone, PartialEq, Eq, Debug)]
-pub enum TagListErrorKind {
-    UnsortedTagList,
-    DuplicateTagItems,
-}
-
-#[derive(Debug, Clone)]
-pub struct TagListError<'a> {
-    kind: TagListErrorKind,
-    line: &'a str,
-    prev_line: &'a str,
-}
-
-impl<'a> Display for TagListError<'a> {
-    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>)
-	   -> core::result::Result<(), core::fmt::Error> {
-        fmt.write_str(match self.kind {
-	    TagListErrorKind::UnsortedTagList => "Unsorted list of tag items\n",
-	    TagListErrorKind::DuplicateTagItems => "Duplicate tag items\n",
-	})?;
-	fmt.write_str(self.prev_line)?;
-	fmt.write_str("\n")?;
-        fmt.write_str(self.line)
     }
 }
 
