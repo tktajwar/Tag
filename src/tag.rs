@@ -608,16 +608,10 @@ impl fmt::Display for TagItem {
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct UnsortedTagListError;
-
-#[derive(Debug, Clone)]
-pub struct DuplicateTagItemsError;
-
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum TagListErrorKind {
-    UnsortedTagListError,
-    DuplicateTagItemsError,
+    UnsortedTagList,
+    DuplicateTagItems,
 }
 
 #[derive(Debug, Clone)]
@@ -631,8 +625,8 @@ impl<'a> Display for TagListError<'a> {
     fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>)
 	   -> core::result::Result<(), core::fmt::Error> {
         fmt.write_str(match self.kind {
-	    TagListErrorKind::UnsortedTagListError => "Unsorted list of tag items\n",
-	    TagListErrorKind::DuplicateTagItemsError => "Duplicate tag items\n",
+	    TagListErrorKind::UnsortedTagList => "Unsorted list of tag items\n",
+	    TagListErrorKind::DuplicateTagItems => "Duplicate tag items\n",
 	})?;
 	fmt.write_str(self.prev_line);
 	fmt.write_str("\n");
@@ -658,9 +652,9 @@ impl<'a> TryFrom<&'a str> for TagMap<'a> {
 		if *last_item.0 >= tag_id {
 		    let kind = {
 			if *last_item.0 > tag_id {
-			    TagListErrorKind::UnsortedTagListError
+			    TagListErrorKind::UnsortedTagList
 			} else {
-			    TagListErrorKind::DuplicateTagItemsError
+			    TagListErrorKind::DuplicateTagItems
 			}
 		    };
 		    let prev_line = *last_item.1;
