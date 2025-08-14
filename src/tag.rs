@@ -28,7 +28,7 @@ impl<'a> Display for TagListError<'a> {
     }
 }
 
-#[derive(PartialEq, PartialOrd, Eq, Hash)]
+#[derive(PartialEq, PartialOrd, Eq, Hash, Clone)]
 pub struct TagID {
     exponent: usize,
     mantissa: String,
