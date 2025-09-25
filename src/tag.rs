@@ -489,7 +489,7 @@ impl TagItem {
 	}
     }
 
-    pub fn attributes(&self) -> Option<Vec<(Option<String>,Option<String>)>> {
+    pub fn attributes(&self) -> Vec<(Option<String>,Option<String>)> {
 	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
 
 	for field in self.fields() {
@@ -499,26 +499,18 @@ impl TagItem {
 	    }
 	}
 
-	if attributes.len() != 0 {
-	    Some(attributes)
-	} else {
-	    None
-	}
+	attributes
     }
 
     pub fn fetch_attribute(&self, key: String) -> Option<(Option<String>,Option<String>)> {
-	if let Some(attributes) = self.attributes() {
-	    for attribute in attributes {
-		if let Some(ref attribute_key) = attribute.0 {
-		    if *attribute_key == key {
-			return Some(attribute)
-		    }
+	for attribute in self.attributes() {
+	    if let Some(ref attribute_key) = attribute.0 {
+		if *attribute_key == key {
+		    return Some(attribute)
 		}
 	    }
-	    None
-	} else {
-	    None
 	}
+	None
     }
 
     pub fn has_attribute(&self, key: String) -> bool {
