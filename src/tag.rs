@@ -688,3 +688,14 @@ impl<'a> TryFrom<&'a str> for TagMap<'a> {
 	Ok( Self { map } )
     }
 }
+
+impl<'a> TagMap<'a> {
+    pub fn get(&self, tag_id: &TagID) -> Result<TagItem, TagQueryError> {
+	let Some(&tag_line) = self.map.get(tag_id) else {
+	    return Err( TagQueryError {
+		kind: TagQueryErrorKind::ItemNotFound(tag_id.clone()),
+	    });
+	};
+	Ok( TagItem::from(tag_line) )
+    }
+}
