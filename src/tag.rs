@@ -28,6 +28,26 @@ impl<'a> Display for TagListError<'a> {
     }
 }
 
+#[derive(PartialEq, Eq)]
+pub enum TagQueryErrorKind {
+    ItemNotFound(TagID),
+}
+
+pub struct TagQueryError {
+    kind: TagQueryErrorKind,
+}
+
+impl Display for TagQueryError {
+    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>)
+	   -> core::result::Result<(), core::fmt::Error> {
+        match &self.kind {
+	    TagQueryErrorKind::ItemNotFound(tag_id) => {
+		fmt.write_fmt(format_args!("{tag_id} was not found"))
+	    },
+	}
+    }
+}
+
 #[derive(PartialEq, PartialOrd, Eq, Hash, Clone)]
 pub struct TagID {
     exponent: usize,

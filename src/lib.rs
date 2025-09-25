@@ -186,6 +186,14 @@ mod tests {
 	";
 	let tag_map = TagMap::try_from(tag_file);
 	assert!(tag_map.is_ok());
+	let Ok(tag_map) = tag_map else {panic!("Tag map isn't Ok!")};
+	let get_1_0 = tag_map.get(&TagID::from("@1.0"));
+	assert!(get_1_0.is_ok());
+	let get_2_5 = tag_map.get(&TagID::from("@2.5"));
+	assert!(get_2_5.is_err());
+	if let Err(e) = get_2_5 {
+	    println!("{}", e);
+	}
 
 	let tag_file_unsorted = "\
 	@2.0  | Second Item\n\
