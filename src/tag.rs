@@ -455,7 +455,17 @@ impl TagItem {
 	    }
 	    new_tagline.push_str(" | ");
 	}
-	new_tagline.push_str(&new_field);
+
+	if new_field.len() > 0 {
+	    new_tagline.push_str(&new_field);
+	} else {
+	    if new_tagline.len() >= 3 {
+		new_tagline.pop();
+		new_tagline.pop();
+		new_tagline.pop();
+	    }
+	}
+
 	for field in &fields[field_no+1.. ] {
 	    new_tagline.push_str(" | ");
 	    match field {
@@ -466,6 +476,7 @@ impl TagItem {
 		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
 	}
+
 	self.tag_line = new_tagline;
     }
 
@@ -482,11 +493,32 @@ impl TagItem {
     }
 
     pub fn remove_flags(&mut self, flags: &str) {
-	for field_no in (0..self.fields().len()).rev() {
-	    if let TagField::Flags(_) = self.fields()[field_no] {
-		self.remove_flags_from_field_no(flags, field_no);
+	let mut new_tagline = "".to_string();
+	for field in self.fields() {
+	    let s = match field {
+		TagField::Flags(_) => &field.sincat_flags(flags).unwrap(),
+		TagField::ID(s) |
+		TagField::Title(s) |
+		TagField::Attribute(s) |
+		TagField::Invalid(s) => s,
+	    };
+
+	    if s.len() > 0 {
+		new_tagline.push_str(s);
+		new_tagline.push_str(" | ");
 	    }
 	}
+
+	'clean_end: loop {
+	    let Some(c) = new_tagline.pop() else {break 'clean_end};
+
+	    if c == ' ' || c == '|' {
+		new_tagline.push(c);
+		break 'clean_end;
+	    }
+	}
+
+	self.tag_line = new_tagline;
     }
 
     pub fn attributes(&self) -> Vec<(Option<String>,Option<String>)> {
