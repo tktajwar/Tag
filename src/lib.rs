@@ -3,7 +3,6 @@ mod tag;
 pub use crate::tag::TagID;
 pub use crate::tag::TagField;
 pub use crate::tag::TagItem;
-pub use crate::tag::TagMap;
 
 #[cfg(test)]
 mod tests {
@@ -173,40 +172,5 @@ mod tests {
 	assert!(!(a.has_attribute(":attr:".to_string())));
 	a.remove_attribute(":null:");
 	assert!(!(a.has_attribute(":null:".to_string())));
-    }
-
-    #[test]
-    fn tag_map() {
-	let tag_file = "\
-	@1.0  | First Item    | :file: introduction.txt\n\
-	@1.1  | Sub-item?     | :file: special.txt | #special\n\
-	@1.11 | Sub-sub-item? | :file: extra.txt   | #special\n\
-	@2.0  | Second Item   | :file: body.txt\n\
-	@3.0  | The End       | :file: credits.txt\
-	";
-	let tag_map = TagMap::try_from(tag_file);
-	assert!(tag_map.is_ok());
-	let Ok(tag_map) = tag_map else {panic!("Tag map isn't Ok!")};
-	let get_1_0 = tag_map.get(&TagID::from("@1.0"));
-	assert!(get_1_0.is_ok());
-	let get_2_5 = tag_map.get(&TagID::from("@2.5"));
-	assert!(get_2_5.is_err());
-	if let Err(e) = get_2_5 {
-	    println!("{}", e);
-	}
-
-	let tag_file_unsorted = "\
-	@2.0  | Second Item\n\
-	@1.0  | First Item\n\
-	";
-	let tag_map_unsorted = TagMap::try_from(tag_file_unsorted);
-	assert!(tag_map_unsorted.is_err());
-
-	let tag_file_with_duplicate = "\
-	@1.0  | First Item\n\
-	@1.0  | First Item\n\
-	";
-	let tag_map_with_duplicate = TagMap::try_from(tag_file_with_duplicate);
-	assert!(tag_map_with_duplicate.is_err());
     }
 }

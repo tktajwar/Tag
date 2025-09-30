@@ -3,51 +3,6 @@ use std::fmt::Display;
 use regex::Regex;
 use linked_hash_map::LinkedHashMap;
 
-#[derive(PartialEq, Eq)]
-pub enum TagListErrorKind {
-    UnsortedTagList,
-    DuplicateTagItems,
-}
-
-pub struct TagListError<'a> {
-    kind: TagListErrorKind,
-    line: &'a str,
-    prev_line: &'a str,
-}
-
-impl<'a> Display for TagListError<'a> {
-    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>)
-	   -> core::result::Result<(), core::fmt::Error> {
-        fmt.write_str(match self.kind {
-	    TagListErrorKind::UnsortedTagList => "Unsorted list of tag items\n",
-	    TagListErrorKind::DuplicateTagItems => "Duplicate tag items\n",
-	})?;
-	fmt.write_str(self.prev_line)?;
-	fmt.write_str("\n")?;
-        fmt.write_str(self.line)
-    }
-}
-
-#[derive(PartialEq, Eq)]
-pub enum TagQueryErrorKind {
-    ItemNotFound(TagID),
-}
-
-pub struct TagQueryError {
-    kind: TagQueryErrorKind,
-}
-
-impl Display for TagQueryError {
-    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>)
-	   -> core::result::Result<(), core::fmt::Error> {
-        match &self.kind {
-	    TagQueryErrorKind::ItemNotFound(tag_id) => {
-		fmt.write_fmt(format_args!("{tag_id} was not found"))
-	    },
-	}
-    }
-}
-
 #[derive(PartialEq, PartialOrd, Eq, Hash, Clone)]
 pub struct TagID {
     exponent: usize,
@@ -674,52 +629,5 @@ impl From<&str> for TagItem {
 impl fmt::Display for TagItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 	write!(f, "{}", self.tag_line)
-    }
-}
-
-pub struct TagMap<'a> {
-    map: LinkedHashMap<TagID, &'a str>,
-}
-
-impl<'a> TryFrom<&'a str> for TagMap<'a> {
-    type Error = TagListError<'a>;
-    fn try_from(file: &'a str) -> Result<Self, Self::Error> {
-	let mut map = LinkedHashMap::new();
-
-	for line in file.lines() {
-	    if line.as_bytes()[0] != b'@' { continue };
-	    let re = Regex::new(r"^(@[0-9a-zA-Z]+\.[0-9a-zA-Z]*).*$").unwrap();
-	    let Some(id_str) = re.find(line) else { continue };
-	    let tag_id = TagID::from(id_str.as_str());
-	    if let Some(last_item) = map.back() {
-		if *last_item.0 >= tag_id {
-		    let kind = {
-			if *last_item.0 > tag_id {
-			    TagListErrorKind::UnsortedTagList
-			} else {
-			    TagListErrorKind::DuplicateTagItems
-			}
-		    };
-		    let prev_line = *last_item.1;
-		    return Err(TagListError {
-			kind, line, prev_line,
-		    });
-		};
-	    }
-	    map.insert(tag_id, line);
-	}
-
-	Ok( Self { map } )
-    }
-}
-
-impl<'a> TagMap<'a> {
-    pub fn get(&self, tag_id: &TagID) -> Result<TagItem, TagQueryError> {
-	let Some(&tag_line) = self.map.get(tag_id) else {
-	    return Err( TagQueryError {
-		kind: TagQueryErrorKind::ItemNotFound(tag_id.clone()),
-	    });
-	};
-	Ok( TagItem::from(tag_line) )
     }
 }
