@@ -1,6 +1,6 @@
 [package]
 name = "tajwar-tag"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2024"
 authors = ["Sayed Takey Tajwar Arko <sayed.takey.tajwar@g.bracu.ac.bd>"]
 repository = "https://codeberg.org/tktajwar/tag"
