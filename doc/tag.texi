@@ -93,15 +93,30 @@ Note that a tag can be any positive number that isn't already taken by another i
 @node Valid Tag numbers
 @section Valid Tag numbers
 
-Tag numbers are positive alphanumeric floating-point numbers consisting of Latin letters and Arabic numerals that are used identifiers for tag items. Tag numbers are represented with an @samp{@@} followed by the number. For example, @samp{@@1.0}, @samp{@@1.1}, @samp{@@1.19}, @samp{@@1.B2}, @samp{@@12.5}, @samp{@@786.25}, @samp{@@300000000.59}, and @samp{@@0.0000000001} are all valid tag numbers. The radix-point character (@kbd{.}) is used to separate the whole number from the fraction.
+Tag numbers are positive alphanumeric base 64 floating-point numbers
+consisting of Latin letters and Arabic numerals with the extension of
+@kbd{-} and @kbd{_} symbols. Tag numbers are represented with an
+@samp{@@} followed by the number. For example, @samp{@@1.0},
+@samp{@@1.1}, @samp{@@1.19}, @samp{@@1.B2}, @samp{@@12.5},
+@samp{@@786.25}, @samp{@@300000000.59}, and @samp{@@0.0000000001} are
+all valid tag numbers. The radix-point character (@kbd{.}) is used to
+separate the whole number from the fraction.
 
-The tag number is alphanumeric which means the tag number is made out of both the numbers @kbd{0} through @kbd{9} and the letters @kbd{A} through @kbd{Z} and @kbd{a} through @kbd{z}. After @kbd{9} comes @kbd{A}. This is base 62 numeral system. This is chosen so we can express more tags with fewer digits and create more meaningful tag numbers. All the digits in base 62 numeral system in ascending order:
+The tag number is alphanumeric which means the tag number is made out of
+both the numbers @kbd{0} through @kbd{9} and the letters @kbd{A} through
+@kbd{Z} and @kbd{a} through @kbd{z} then @kbd{-} and @kbd{_}. After
+@kbd{9} comes @kbd{A}. This is base64url numeral system with a slight
+change in ordering
+@url{https://datatracker.ietf.org/doc/html/rfc4648#section-5}. This is
+chosen so we can express more tags with fewer digits and create more
+meaningful tag numbers. All the digits in base 64 numeral system in
+ascending order:
 
 @verbatim
-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_
 @end verbatim
 
-@noindent There a few rules to choosing a tag numbers:
+@noindent There are a few rules to choosing tag numbers:
 
 @itemize @bullet{}
 @item
@@ -112,7 +127,7 @@ A tag number cannot contain anything other than:
 one @kbd{@@} in the beginning
 
 @item
-alphanumeric characters
+base64url characters
 
 @item
 radix point (@kbd{.})
