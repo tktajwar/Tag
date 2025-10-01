@@ -274,9 +274,10 @@ impl <'a>TagField<'a> {
     /// let f1 = tag::TagField::Flags("#hello #world");
     /// assert_eq!(f1.concat_flags("#rust #program"),
     ///            Some("#hello #world #rust #program".to_string()));
-    ///
     /// assert_eq!(f1.concat_flags(":attr: value"), None);
+    /// ```
     ///
+    /// ```
     /// let f2 = tag::TagField::Title("Not a TagField::Flags");
     /// assert_eq!(f2.concat_flags("#rust #program"), None);
     /// ```
@@ -304,10 +305,11 @@ impl <'a>TagField<'a> {
     /// let f1 = tag::TagField::Flags("#hello #world");
     /// assert_eq!(f1.sincat_flags("#world"),
     ///            Some("#hello".to_string()));
-    ///
     /// assert_eq!(f1.sincat_flags(":attr: value"),
     ///            Some("#hello #world".to_string()));
+    /// ```
     ///
+    /// ```
     /// let f2 = tag::TagField::Title("Not a TagField::Flags");
     /// assert_eq!(f2.sincat_flags("#hello #world"), None);
     /// ```
@@ -342,11 +344,13 @@ impl <'a>TagField<'a> {
     /// # Examples
     ///
     /// ```
-    /// let field_1 = tag::TagField::Attribute(":src: code");
-    /// assert_eq!(field_1.attribute_key(), Some(":src:".to_string()));
+    /// let f1 = tag::TagField::Attribute(":src: code");
+    /// assert_eq!(f1.attribute_key(), Some(":src:".to_string()));
+    /// ```
     ///
-    /// let field_2 = tag::TagField::Title("hello world");
-    /// assert_eq!(field_2.attribute_key(), None);
+    /// ```
+    /// let f2 = tag::TagField::Title("hello world");
+    /// assert_eq!(f2.attribute_key(), None);
     /// ```
 
     pub fn attribute_key(&self) -> Option<String> {
@@ -369,14 +373,18 @@ impl <'a>TagField<'a> {
     /// # Examples
     ///
     /// ```
-    /// let field_1 = tag::TagField::Attribute(":src: code");
-    /// assert_eq!(field_1.attribute_value(), Some("code".to_string()));
+    /// let f1 = tag::TagField::Attribute(":src: code");
+    /// assert_eq!(f1.attribute_value(), Some("code".to_string()));
+    /// ```
     ///
-    /// let field_2 = tag::TagField::Title("hello world");
-    /// assert_eq!(field_2.attribute_value(), None);
+    /// ```
+    /// let f2 = tag::TagField::Title("hello world");
+    /// assert_eq!(f2.attribute_value(), None);
+    /// ```
     ///
-    /// let field_3 = tag::TagField::Attribute(":existentialism:");
-    /// assert_eq!(field_3.attribute_value(), None);
+    /// ```
+    /// let f3 = tag::TagField::Attribute(":existentialism:");
+    /// assert_eq!(f3.attribute_value(), None);
     /// ```
 
     pub fn attribute_value(&self) -> Option<String> {
@@ -402,17 +410,21 @@ impl <'a>TagField<'a> {
     /// # Examples
     ///
     /// ```
-    /// let field_1 = tag::TagField::Attribute(":src: code");
-    /// assert_eq!(field_1.attribute_key_value(), Some((
+    /// let f1 = tag::TagField::Attribute(":src: code");
+    /// assert_eq!(f1.attribute_key_value(), Some((
     ///     Some(":src:".to_string()),
     ///     Some("code".to_string()),
     /// )));
+    /// ```
     ///
-    /// let field_2 = tag::TagField::Title("hello world");
-    /// assert_eq!(field_2.attribute_key_value(), None);
+    /// ```
+    /// let f2 = tag::TagField::Title("hello world");
+    /// assert_eq!(f2.attribute_key_value(), None);
+    /// ```
     ///
-    /// let field_3 = tag::TagField::Attribute(":existentialism:");
-    /// assert_eq!(field_3.attribute_key_value(), Some((
+    /// ```
+    /// let f3 = tag::TagField::Attribute(":existentialism:");
+    /// assert_eq!(f3.attribute_key_value(), Some((
     ///     Some(":existentialism:".to_string()),
     ///     None,
     /// )));
@@ -480,22 +492,22 @@ impl TagItem {
 	fields
     }
 
-    /// Returns a vector of flags (Strings) of the given TagItem.
+    /// Returns a vector of flags of the given TagItem.
     ///
     /// # Examples
     ///
     /// ```
     /// let a = tag::TagItem::from("@1.0 | My Title | #hello #world |\
     ///                        :invalid | #valid-flag | #inva!!lid");
-    ///
     /// assert_eq!(a.flags(), Some(vec![
     ///     "#hello".to_string(),
     ///     "#world".to_string(),
     ///     "#valid-flag".to_string(),
     /// ]));
+    /// ```
     ///
+    /// ```
     /// let b = tag::TagItem::from("@1.0 | Item with no flags");
-    ///
     /// assert_eq!(b.flags(), None);
     /// ```
 
@@ -693,7 +705,9 @@ impl TagItem {
     ///     "#new".to_string(),
     ///     "#flags".to_string(),
     /// ]));
+    /// ```
     ///
+    /// ```
     /// let mut b = tag::TagItem::from(
     ///     "@1.0 | No Prior Flags"
     /// );
@@ -731,7 +745,9 @@ impl TagItem {
     /// assert_eq!(a.flags(), Some(vec![
     ///     "#world".to_string(),
     /// ]));
+    /// ```
     ///
+    /// ```
     /// let mut b = tag::TagItem::from(
     ///     "@1.0 | #many | #many #flags | #happy #flags | #cool"
     /// );
@@ -786,7 +802,9 @@ impl TagItem {
     ///     (Some(":src:".to_string()), Some("code".to_string())),
     ///     (Some(":null:".to_string()), None),
     /// ]);
+    /// ```
     ///
+    /// ```
     /// let b = tag::TagItem::from("@1.0 | Item with no attributes");
     ///
     /// assert_eq!(b.attributes(), vec![]);
