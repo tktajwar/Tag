@@ -7,7 +7,6 @@ repository = "https://codeberg.org/tktajwar/tag"
 categories = ["command-line-utilities", "text-editors", "database"]
 
 [dependencies]
-linked-hash-map = "0.5.6"
 regex = "1.3.9"
 
 [lib]
