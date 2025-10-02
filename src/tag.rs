@@ -1,193 +1,149 @@
 use std::fmt;
 use std::fmt::Display;
 use regex::Regex;
-use linked_hash_map::LinkedHashMap;
+use rust_decimal::prelude::*;
 
-#[derive(PartialEq, PartialOrd, Eq, Hash, Clone, Debug)]
+#[derive(PartialEq, PartialOrd, Eq, Clone, Debug)]
 pub struct TagID {
-    exponent: usize,
-    mantissa: String,
+    id: Decimal,
 }
 
-impl From<&str> for TagID {
+impl TryFrom<&str> for TagID {
+    type Error = rust_decimal::Error;
 
-    /// Creates TagID from string slice.
+    /// Returns a TagID from string slice, or `rust_decimal::Error` on
+    /// parse failure.
     ///
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagID::from("@1.0");
+    /// let id1 = tag::TagID::try_from("@1.0");
+    ///
+    /// assert!(id1.is_ok());
+    /// ```
+    ///
+    /// Leading and trailing zeros will be ignored.
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     tag::TagID::try_from("@00000000000000000001"),
+    ///     tag::TagID::try_from("@1.000000000000000000"),
+    /// );
     /// ```
 
-    fn from(tag_number: &str) -> TagID {
-	let mut mantissa: String = String::with_capacity(tag_number.len() - 1);
-	let mut start: usize = 1;
+    fn try_from(tag_number: &str) -> Result<TagID, Self::Error> {
+	let mut start: usize = 0;
+	let mut end: usize = tag_number.len() - 1;
 
-	// ignore leading zeros
-	while start < tag_number.len() && tag_number.as_bytes()[start] == b'0' {
+	while let Some(c) = tag_number.as_bytes().get(start) {
+	    if b'0' <= *c && *c <= b'9' { break };
 	    start += 1;
 	}
-	let mut i = start;
-
-	// parse until radix point
-	 while i < tag_number.len() {
-	     match tag_number.as_bytes()[i] {
-		 b'0'..=b'9'
-		     | b'A'..=b'Z'
-		     | b'a'..=b'z'
-		     => mantissa.push(tag_number.as_bytes()[i] as char),
-		 _ => break,
-	     }
-	     i += 1;
+	while let Some(c) = tag_number.as_bytes().get(end) {
+	    if b'0' <= *c && *c <= b'9' { break };
+	    if end <= start { break };
+	    end -= 1;
 	}
-	let exponent: usize = i - start;
 
-	// parse the rest of the string
-	 while i < tag_number.len() {
-	     match tag_number.as_bytes()[i] {
-		 b'0'..=b'9'
-		     | b'A'..=b'Z'
-		     | b'a'..=b'z'
-		     => mantissa.push(tag_number.as_bytes()[i] as char),
-		 b'.' => (),
-		 _ => break,
-	     }
-	     i += 1;
-	 }
+	let id = Decimal::from_str_exact(
+	    &tag_number[start..=end]
+	)?.normalize();
 
-	// remove trailing zeros
-	while mantissa.len() > exponent {
-	    if mantissa.as_bytes()[mantissa.len()-1] == b'0' {
-		mantissa.pop();
+	Ok (
+	    TagID {
+		id,
 	    }
-	    else {
-		break
-	    }
-	}
-
-	// avoid @0.0
-	if mantissa.len() == 0 {
-	    panic!("Tried to create non-positive TagID!");
-	}
-
-	TagID { exponent, mantissa }
+	)
     }
 }
 
 impl fmt::Display for TagID {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-	let left = {
-	    if self.exponent > 0 {
-		&self.mantissa[0..self.exponent]
-	    }
-	    else {
-		"0"
-	    }
-	};
-	let right = {
-	    if self.mantissa.len() > self.exponent {
-		&self.mantissa[self.exponent..self.mantissa.len()]
-	    }
-	    else {
-		"0"
-	    }
-	};
-        write!(f, "@{left}.{right}")
+	if self.id.scale() > 0 {
+	    write!(f, "@{}", self.id.to_string())
+	} else {
+	    write!(f, "@{}.0", self.id.to_string())
+	}
     }
 }
 
 impl TagID {
-    /// Generates a TagID that comes after a TagID.
+    /// Returns a TagID that comes after a TagID
     ///
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagID::from("@1.0");
+    /// let a = tag::TagID::try_from("@1.0").unwrap();
     /// let b = tag::TagID::generate_next(&a);
     ///
-    /// assert_eq!(tag::TagID::from("@2.0"), b);
+    /// assert_eq!(tag::TagID::try_from("@2.0").unwrap(), b);
+    /// assert!(a < b);
+    /// ```
+    ///
+    /// ```
+    /// let a = tag::TagID::try_from("@1.1").unwrap();
+    /// let b = tag::TagID::generate_next(&a);
+    ///
+    /// assert_eq!(tag::TagID::try_from("@1.2").unwrap(), b);
+    /// assert!(a < b);
+    /// ```
+    ///
+    /// ```
+    /// let a = tag::TagID::try_from("@1.9").unwrap();
+    /// let b = tag::TagID::generate_next(&a);
+    ///
+    /// assert_eq!(tag::TagID::try_from("@2").unwrap(), b);
     /// assert!(a < b);
     /// ```
 
     pub fn generate_next(tag_id: &TagID) -> TagID {
-	let mut exponent = tag_id.exponent;
-	let mut mantissa = tag_id.mantissa.clone();
+	let id = tag_id.id;
+	let next_id = id + Decimal::new(1, id.scale());
 
-	let Some(mut last_digit) = mantissa.pop() else {
-	    panic!("Coudln't get the last digit");
-	};
-
-	while last_digit == 'z' {
-	    if mantissa.len() == 0 {
-		mantissa.push('1');
-		for _ in 0..exponent {
-		    mantissa.push('0');
-		}
-		exponent = exponent + 1;
-		return TagID{ exponent, mantissa };
-	    }
-	    match mantissa.pop() {
-		Some(c) => last_digit = c,
-		None => panic!("Couldn't get the suitable digit"),
-	    }
+	TagID {
+	    id: next_id,
 	}
-
-	last_digit = match last_digit {
-	    '0'..'9'
-		| 'A'..'Z'
-		| 'a'..'z'
-		=> (last_digit as u8 + 1 as u8) as char,
-	    '9' => 'A',
-	    'Z' => 'a',
-	    _ => panic!("Invalid last digit!"),
-	};
-
-	mantissa.push(last_digit);
-
-	while mantissa.len() < exponent {
-	    mantissa.push('0');
-	}
-
-	TagID{ exponent, mantissa }
     }
 
-    /// Generates a TagID between two TagIDs.
+    /// Returns a TagID between two TagIDs.
     ///
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagID::from("@1.0");
-    /// let d = tag::TagID::from("@2.0");
+    /// let a = tag::TagID::try_from("@1.0").unwrap();
+    /// let d = tag::TagID::try_from("@2.0").unwrap();
     /// let b = tag::TagID::generate_between(&a, &d);
     /// let c = tag::TagID::generate_between(&b, &d);
     ///
     /// assert!(a < b && b < c && c < d);
     /// ```
 
-    pub fn generate_between(smaller_id: &TagID, larger_id: &TagID) -> TagID {
-	if !(smaller_id < larger_id) {
-	    panic!("Smaller ID must be smaller than the Larger ID!");
+    pub fn generate_between(
+	id1: &TagID, id2: &TagID
+    ) -> TagID {
+	let smaller_id;
+	let larger_id;
+
+	if id1 < id2 {
+	    smaller_id = id1;
+	    larger_id = id2;
+	} else if id2 < id1 {
+	    smaller_id = id2;
+	    larger_id = id1;
+	} else {
+	    return id1.clone();
 	}
 
 	let middle_id = TagID::generate_next(smaller_id);
-
 	if middle_id < *larger_id {
 	    return middle_id;
 	}
 
-	let exponent = smaller_id.exponent;
-	let mantissa = smaller_id.mantissa.clone() + "1";
-
-	let mut middle_id = TagID{ exponent, mantissa };
-
-	while middle_id >= *larger_id {
-	    if middle_id.mantissa.len() > middle_id.exponent {
-		middle_id.mantissa.pop();
-	    }
-	    middle_id.mantissa.push_str("01");
+	TagID{
+	    id: (
+		(smaller_id.id / Decimal::TWO) + (larger_id.id / Decimal::TWO)
+	    ),
 	}
-
-	middle_id
     }
 }
 
@@ -202,18 +158,20 @@ pub enum TagField<'a> {
 }
 
 impl <'a>TagField<'a> {
+    /// Return a field with the appropriate type from the given str.
+
     fn from(field_str: &'a str) -> TagField<'a> {
 	if field_str.len() == 0 {
 	    return TagField::Invalid(field_str)
 	}
 
-	return match field_str.as_bytes()[0] {
+	match field_str.as_bytes()[0] {
 	    b'@' => {
-		let re = Regex::new(r"^@[0-9a-zA-Z]+\.[0-9a-zA-Z]*$").unwrap();
+		let re = Regex::new(r"^@[0-9]+\.[0-9]*$").unwrap();
 		if re.is_match(field_str) {
 		    TagField::ID(field_str)
 		} else {
-		    TagField::Invalid(field_str)
+		    TagField::Title(field_str)
 		}
 	    },
 	    b'#' => {
@@ -485,8 +443,10 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | My Title | #hello #world | :src: code |\
-    /// :invalid | #valid-flag | #inva!!lid");
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | My Title | #hello #world | :src: code |\
+    ///      :invalid | #valid-flag | #inva!!lid"
+    /// ).unwrap();
     /// let fields = a.fields();
     /// assert_eq!(tag::TagField::ID("@1.0"), fields[0]);
     /// assert_eq!(tag::TagField::Title("My Title"), fields[1]);
@@ -515,8 +475,10 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | My Title | #hello #world |\
-    ///                        :invalid | #valid-flag | #inva!!lid");
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | My Title | #hello #world |\
+    ///      :invalid | #valid-flag | #inva!!lid"
+    /// ).unwrap();
     /// assert_eq!(
     ///     Some(vec![
     ///         "#hello".to_string(),
@@ -528,7 +490,7 @@ impl TagItem {
     /// ```
     ///
     /// ```
-    /// let b = tag::TagItem::from("@1.0 | Item with no flags");
+    /// let b = tag::TagItem::try_from("@1.0 | Item with no flags").unwrap();
     /// assert_eq!(None, b.flags());
     /// ```
 
@@ -554,12 +516,14 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | My Title | #hello #world |\
-    ///                             :invalid | #valid-flag | #inva!!lid");
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | My Title | #hello #world |\
+    ///      :invalid | #valid-flag | #inva!!lid"
+    /// ).unwrap();
     ///
     /// assert!(!(a.has_flag("#test".to_string())));
     ///
-    /// let b = tag::TagItem::from("@1.0 | Item with no flags");
+    /// let b = tag::TagItem::try_from("@1.0 | Item with no flags").unwrap();
     ///
     /// assert!(!(b.has_flag("#hello".to_string())));
     /// ```
@@ -577,8 +541,10 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | My Title | #hello #world |\
-    ///                        :invalid | #valid-flag | #inva!!lid");
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | My Title | #hello #world |\
+    ///      :invalid | #valid-flag | #inva!!lid"
+    /// ).unwrap();
     /// assert!(a.has_flags(vec![
     ///     "#hello".to_string(),
     ///     "#world".to_string(),
@@ -606,9 +572,9 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from(
+    /// let mut a = tag::TagItem::try_from(
     ///     "@1.0 | Field Indexing is Zero-based | #hello #world"
-    /// );
+    /// ).unwrap();
     /// a.add_flags_to_field_no("#new #flags", 2);
     ///
     /// assert_eq!(
@@ -658,9 +624,9 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from(
+    /// let mut a = tag::TagItem::try_from(
     ///     "@1.0 | Field Indexing is Zero-based | #hello #world #new #flags"
-    /// );
+    /// ).unwrap();
     /// a.remove_flags_from_field_no("#hello #new", 2);
     ///
     /// assert_eq!(
@@ -721,9 +687,9 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from(
+    /// let mut a = tag::TagItem::try_from(
     ///     "@1.0 | Already with Flags | #hello #world"
-    /// );
+    /// ).unwrap();
     /// a.add_flags("#new #flags");
     ///
     /// assert_eq!(
@@ -738,9 +704,9 @@ impl TagItem {
     /// ```
     ///
     /// ```
-    /// let mut b = tag::TagItem::from(
+    /// let mut b = tag::TagItem::try_from(
     ///     "@1.0 | No Prior Flags"
-    /// );
+    /// ).unwrap();
     /// b.add_flags("#you-have-a-flag-now");
     ///
     /// assert_eq!(
@@ -770,9 +736,9 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from(
+    /// let mut a = tag::TagItem::try_from(
     ///     "@1.0 | Flags | #hello #world"
-    /// );
+    /// ).unwrap();
     /// a.remove_flags("#hello");
     ///
     /// assert_eq!(
@@ -784,9 +750,9 @@ impl TagItem {
     /// ```
     ///
     /// ```
-    /// let mut b = tag::TagItem::from(
+    /// let mut b = tag::TagItem::try_from(
     ///     "@1.0 | #many | #many #flags | #happy #flags | #cool"
-    /// );
+    /// ).unwrap();
     /// b.remove_flags("#many #happy");
     ///
     /// assert_eq!(
@@ -835,7 +801,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | :src: code | :null:");
+    /// let a = tag::TagItem::try_from("@1.0 | :src: code | :null:").unwrap();
     ///
     /// assert_eq!(
     ///     vec![
@@ -847,7 +813,7 @@ impl TagItem {
     /// ```
     ///
     /// ```
-    /// let b = tag::TagItem::from("@1.0 | Item with no attributes");
+    /// let b = tag::TagItem::try_from("@1.0 | Item with no attributes").unwrap();
     ///
     /// assert_eq!(
     ///     Vec::<(Option<String>,Option<String>)>::new(),
@@ -874,7 +840,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | :src: code");
+    /// let a = tag::TagItem::try_from("@1.0 | :src: code").unwrap();
     /// assert_eq!(
     ///     Some((
     ///         Some(":src:".to_string()),
@@ -901,7 +867,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | :src: code");
+    /// let a = tag::TagItem::try_from("@1.0 | :src: code").unwrap();
     /// assert!(a.has_attribute(":src:".to_string()));
     /// assert!(!a.has_attribute(":null:".to_string()));
     /// ```
@@ -918,7 +884,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | :src: code | :src: new");
+    /// let a = tag::TagItem::try_from("@1.0 | :src: code | :src: new").unwrap();
     /// assert!(a.match_attribute((
     ///     Some(":src:".to_string()),
     ///     Some("code".to_string()),
@@ -949,7 +915,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from("@1.0 | Program source | :src: code");
+    /// let mut a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
     /// a.set_attribute_at_field_no((Some(":src:"), Some("tag.rs")), 2);
     ///
     /// assert!(a.match_attribute((
@@ -1007,7 +973,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from("@1.0 | Program source | :src: code");
+    /// let mut a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
     /// a.set_attribute((Some(":src:"), Some("tag.rs")));
     /// a.set_attribute((Some(":attr:"), Some("value")));
     ///
@@ -1048,7 +1014,7 @@ impl TagItem {
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::from("@1.0 | Program source | :src: code");
+    /// let mut a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
     /// a.remove_attribute(":src:");
     /// a.remove_attribute(":does-not-have-this-one-but-ok");
     ///
@@ -1086,17 +1052,22 @@ impl TagItem {
     }
 }
 
-impl From<&str> for TagItem {
+impl TryFrom<&str> for TagItem {
+    type Error = rust_decimal::Error;
 
-    /// Creates TagItem from string slice.
+    /// Returns a TagItem from string slice, or `rust_decimal::Error`
+    /// on ID parse failure.
     ///
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::from("@1.0 | My Title | #hello #world");
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | My Title | #hello #world"
+    /// );
+    /// assert!(a.is_ok());
     /// ```
 
-    fn from(tag_line: &str) -> TagItem {
+    fn try_from(tag_line: &str) -> Result<TagItem, Self::Error> {
 	let mut pipe_end = 0;
 
 	while pipe_end < tag_line.len() {
@@ -1106,11 +1077,11 @@ impl From<&str> for TagItem {
 	    pipe_end += 1;
 	}
 
-	let id = TagID::from(&tag_line[0..pipe_end]);
+	let id = TagID::try_from(&tag_line[0..pipe_end])?;
 
 	let tag_line = String::from(tag_line);
 
-	TagItem { id, tag_line }
+	Ok ( TagItem { id, tag_line } )
     }
 }
 

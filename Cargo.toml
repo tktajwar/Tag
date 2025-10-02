@@ -8,6 +8,7 @@ categories = ["command-line-utilities", "text-editors", "database"]
 
 [dependencies]
 regex = "1.3.9"
+rust_decimal = "1.38.0"
 
 [lib]
 name = "tag"
