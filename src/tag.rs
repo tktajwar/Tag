@@ -1,5 +1,4 @@
 use std::fmt;
-use std::fmt::Display;
 use regex::Regex;
 use rust_decimal::prelude::*;
 
@@ -165,9 +164,20 @@ impl <'a>TagField<'a> {
 	    return TagField::Invalid(field_str)
 	}
 
-	match field_str.as_bytes()[0] {
+	let first_byte: u8 = {
+	    let mut first: usize = 0;
+	    while first+1 < field_str.len() {
+		if field_str.as_bytes()[first] != b' ' {break};
+		first += 1;
+	    }
+	    field_str.as_bytes()[first]
+	};
+
+	match first_byte {
 	    b'@' => {
-		let re = Regex::new(r"^@[0-9]+\.[0-9]*$").unwrap();
+		let re = Regex::new(
+		    r"^\s*@[0-9]+[0-9\.]*\s*$"
+		).unwrap();
 		if re.is_match(field_str) {
 		    TagField::ID(field_str)
 		} else {
@@ -175,7 +185,9 @@ impl <'a>TagField<'a> {
 		}
 	    },
 	    b'#' => {
-		let re = Regex::new(r"^#[0-9a-zA-Z_\-]+(\s*#[0-9a-zA-Z_\-]*)*$").unwrap();
+		let re = Regex::new(
+		    r"^\s*#[0-9a-zA-Z_\-]+(\s*#[0-9a-zA-Z_\-]+)*\s*$"
+		).unwrap();
 		if re.is_match(field_str) {
 		    TagField::Flags(field_str)
 		} else {
@@ -183,13 +195,16 @@ impl <'a>TagField<'a> {
 		}
 	    },
 	    b':' => {
-		let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:[0-9a-zA-Z_\-\.\,\s]*$").unwrap();
+		let re = Regex::new(
+		    r"^\s*:[0-9a-zA-Z_\-\s]+:[0-9a-zA-Z_\-\.\,\s]*\s*$"
+		).unwrap();
 		if re.is_match(field_str) {
 		    TagField::Attribute(field_str)
 		} else {
 		    TagField::Invalid(field_str)
 		}
 	    },
+	    b' ' => TagField::Invalid(field_str),
 	    _   => TagField::Title(field_str),
 	}
     }
@@ -249,7 +264,9 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn concat_flags(&self, flags: &str) -> Option<String> {
-	let re = Regex::new(r"^#[0-9a-zA-Z_\-]+(\s#[0-9a-zA-Z_\-]+)*$").unwrap();
+	let re = Regex::new(
+	    r"^#[0-9a-zA-Z_\-]+(\s*#[0-9a-zA-Z_\-]+)*$"
+	).unwrap();
 
 	let Some(flags) = re.find(flags) else {
 	    return None;
@@ -295,7 +312,10 @@ impl <'a>TagField<'a> {
 	    _ => return None,
 	};
 
-	let mut flags_sinned = String::new();
+	let mut flags_sinned = String::with_capacity(
+	    flags.len()
+	);
+	flags_sinned.push(' ');
 	let Some(old_flags) = self.flags() else {
 	    return None;
 	};
@@ -315,7 +335,7 @@ impl <'a>TagField<'a> {
     ///
     /// ```
     /// let f1 = tag::TagField::Attribute(":src: code");
-    /// assert_eq!(Some(":src:".to_string()), f1.attribute_key());
+    /// assert_eq!(Some("src".to_string()), f1.attribute_key());
     /// ```
     ///
     /// ```
@@ -324,10 +344,13 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn attribute_key(&self) -> Option<String> {
-	let re = Regex::new(r"^:[0-9a-zA-Z_\-\s]+:").unwrap();
+	let re = Regex::new(r"^\s*:([0-9a-zA-Z_\-\s]+):").unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
-		if let Some(key) = re.find(field_str) {
+		let Some(captures) = re.captures(field_str) else {
+		    return None
+		};
+		if let Some(key) = captures.get(1) {
 		    Some(key.as_str().to_string())
 		} else {
 		    None
@@ -383,7 +406,7 @@ impl <'a>TagField<'a> {
     /// let f1 = tag::TagField::Attribute(":src: code");
     /// assert_eq!(
     ///     Some((
-    ///         Some(":src:".to_string()),
+    ///         Some("src".to_string()),
     ///         Some("code".to_string()),
     ///     )),
     ///     f1.attribute_key_value(),
@@ -399,15 +422,19 @@ impl <'a>TagField<'a> {
     /// let f3 = tag::TagField::Attribute(":existentialism:");
     /// assert_eq!(
     ///     Some((
-    ///         Some(":existentialism:".to_string()),
+    ///         Some("existentialism".to_string()),
     ///         None,
     ///     )),
     ///     f3.attribute_key_value(),
     /// );
     /// ```
 
-    pub fn attribute_key_value(&self) -> Option<(Option<String>,Option<String>)> {
-	let re = Regex::new(r"^(:[0-9a-zA-Z_\-]+:)\s*([0-9a-zA-Z_\-\.\,\s]+$)?").unwrap();
+    pub fn attribute_key_value(
+	&self
+    ) -> Option<(Option<String>, Option<String>)> {
+	let re = Regex::new(
+	    r"^\s*:([0-9a-zA-Z_\-]+):\s*([0-9a-zA-Z_\-\.\,\s]+?)?\s*$"
+	).unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
 		let Some(captures) = re.captures(field_str) else {
@@ -431,6 +458,24 @@ impl <'a>TagField<'a> {
     }
 }
 
+pub struct FieldsIterator<'a> {
+    iter: std::str::Split<'a, char>
+}
+
+impl <'a>Iterator for FieldsIterator<'a> {
+    type Item = TagField<'a>;
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+	if let Some(s) = self.iter.next() {
+	    Some(TagField::from(s))
+	} else {
+	    None
+	}
+    }
+}
+
+#[derive(Clone)]
 pub struct TagItem {
     id: TagID,
     tag_line: String,
@@ -438,36 +483,53 @@ pub struct TagItem {
 
 impl TagItem {
 
-    /// Returns a vector of fields of given TagItem.
+    /// Returns an iterator over the pipe-separated fields of the
+    /// `TagItem`.
     ///
     /// # Examples
     ///
     /// ```
     /// let a = tag::TagItem::try_from(
-    ///     "@1.0 | My Title | #hello #world | :src: code |\
+    ///     "@1.0 | My Title | #hello #world | :src: code | \
     ///      :invalid | #valid-flag | #inva!!lid"
     /// ).unwrap();
-    /// let fields = a.fields();
-    /// assert_eq!(tag::TagField::ID("@1.0"), fields[0]);
-    /// assert_eq!(tag::TagField::Title("My Title"), fields[1]);
-    /// assert_eq!(tag::TagField::Flags("#hello #world"), fields[2]);
-    /// assert_eq!(tag::TagField::Attribute(":src: code"), fields[3]);
-    /// assert_eq!(tag::TagField::Invalid(":invalid"), fields[4]);
-    /// assert_eq!(tag::TagField::Flags("#valid-flag"), fields[5]);
-    /// assert_eq!(tag::TagField::Invalid("#inva!!lid"), fields[6]);
+    /// let mut fields_iter = a.fields();
+    ///
+    /// assert_eq!(
+    ///     Some(tag::TagField::ID("@1.0 ")),
+    ///     fields_iter.next(),
+    /// );
+    /// assert_eq!(
+    ///     Some(tag::TagField::Title(" My Title ")),
+    ///     fields_iter.next(),
+    /// );
+    /// assert_eq!(
+    ///     Some(tag::TagField::Flags(" #hello #world ")),
+    ///     fields_iter.next(),
+    /// );
+    /// assert_eq!(
+    ///     Some(tag::TagField::Attribute(" :src: code ")),
+    ///     fields_iter.next(),
+    /// );
+    /// assert_eq!(
+    ///     Some(tag::TagField::Invalid(" :invalid ")),
+    ///     fields_iter.next(),
+    /// );
+    /// assert_eq!(
+    ///     Some(tag::TagField::Flags(" #valid-flag ")),
+    ///     fields_iter.next()
+    /// );
+    /// assert_eq!(
+    ///     Some(tag::TagField::Invalid(" #inva!!lid")),
+    ///     fields_iter.next(),
+    /// );
+    /// assert_eq!(None, fields_iter.next());
     /// ```
 
-    pub fn fields(&self) -> Vec<TagField> {
-	let mut fields = Vec::new();
-
-	let field_split = self.tag_line.split("|").map(|x| x.trim());
-
-	for field_str in field_split {
-	    let field = TagField::from(field_str);
-	    fields.push(field);
+    pub fn fields(&self) -> FieldsIterator {
+	FieldsIterator {
+	    iter: self.tag_line.split('|'),
 	}
-
-	fields
     }
 
     /// Returns a vector of flags of the given TagItem.
@@ -476,7 +538,7 @@ impl TagItem {
     ///
     /// ```
     /// let a = tag::TagItem::try_from(
-    ///     "@1.0 | My Title | #hello #world |\
+    ///     "@1.0 | My Title | #hello #world | \
     ///      :invalid | #valid-flag | #inva!!lid"
     /// ).unwrap();
     /// assert_eq!(
@@ -566,131 +628,17 @@ impl TagItem {
 	true
     }
 
-    /// Concatenate flags to the `field_no`th field if it's of
-    /// type flags.
+    /// Returns a new copy of `TagItem` with the flags inserted to the
+    /// given field number, or `None` if the given field number isn't
+    /// fields type.
     ///
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::try_from(
+    /// let a = tag::TagItem::try_from(
     ///     "@1.0 | Field Indexing is Zero-based | #hello #world"
     /// ).unwrap();
-    /// a.add_flags_to_field_no("#new #flags", 2);
-    ///
-    /// assert_eq!(
-    ///     Some(vec![
-    ///         "#hello".to_string(),
-    ///         "#world".to_string(),
-    ///         "#new".to_string(),
-    ///         "#flags".to_string(),
-    ///     ]),
-    ///     a.flags(),
-    /// );
-    /// ```
-
-    pub fn add_flags_to_field_no(&mut self, flags: &str, field_no: usize) {
-	let fields = self.fields();
-	let Some(old_field) = fields.get(field_no) else {return};
-	let Some(new_field) = old_field.concat_flags(flags) else {return};
-
-	let mut new_tagline = String::new();
-	for field in &fields[ ..field_no] {
-	    match field {
-		TagField::ID(field_str) |
-		TagField::Title(field_str) |
-		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) |
-		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
-	    }
-	    new_tagline.push_str(" | ");
-	}
-	new_tagline.push_str(&new_field);
-	for field in &fields[field_no+1.. ] {
-	    new_tagline.push_str(" | ");
-	    match field {
-		TagField::ID(field_str) |
-		TagField::Title(field_str) |
-		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) |
-		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
-	    }
-	}
-	self.tag_line = new_tagline;
-    }
-
-    /// Remove flags from the `field_no`th field if it's of type
-    /// flags.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut a = tag::TagItem::try_from(
-    ///     "@1.0 | Field Indexing is Zero-based | #hello #world #new #flags"
-    /// ).unwrap();
-    /// a.remove_flags_from_field_no("#hello #new", 2);
-    ///
-    /// assert_eq!(
-    ///     Some(vec![
-    ///         "#world".to_string(),
-    ///         "#flags".to_string(),
-    ///     ]),
-    ///     a.flags(),
-    /// );
-    /// ```
-
-    pub fn remove_flags_from_field_no(&mut self, flags: &str, field_no: usize) {
-	let fields = self.fields();
-	let Some(old_field) = fields.get(field_no) else {return};
-	let Some(new_field) = old_field.sincat_flags(flags) else {return};
-
-	let mut new_tagline = String::new();
-	for field in &fields[ ..field_no] {
-	    match field {
-		TagField::ID(field_str) |
-		TagField::Title(field_str) |
-		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) |
-		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
-	    }
-	    new_tagline.push_str(" | ");
-	}
-
-	if new_field.len() > 0 {
-	    new_tagline.push_str(&new_field);
-	} else {
-	    if new_tagline.len() >= 3 {
-		new_tagline.pop();
-		new_tagline.pop();
-		new_tagline.pop();
-	    }
-	}
-
-	for field in &fields[field_no+1.. ] {
-	    new_tagline.push_str(" | ");
-	    match field {
-		TagField::ID(field_str) |
-		TagField::Title(field_str) |
-		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) |
-		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
-	    }
-	}
-
-	self.tag_line = new_tagline;
-    }
-
-    /// Add flags to the item.
-    ///
-    /// If the item doesn't have any flags field, a new one will
-    /// appended, otherwise it'll use the last Flag field.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut a = tag::TagItem::try_from(
-    ///     "@1.0 | Already with Flags | #hello #world"
-    /// ).unwrap();
-    /// a.add_flags("#new #flags");
+    /// let a = a.insert_flags_to_field_no("#new #flags", 2).unwrap();
     ///
     /// assert_eq!(
     ///     Some(vec![
@@ -705,9 +653,173 @@ impl TagItem {
     ///
     /// ```
     /// let mut b = tag::TagItem::try_from(
+    ///     "@1.0 | Field with no flags"
+    /// ).unwrap();
+    /// let b = b.insert_flags_to_field_no("#will-it-work", 1);
+    ///
+    /// assert!(b.is_none());
+
+    pub fn insert_flags_to_field_no(
+	&self,
+	flags: &str,
+	field_no: usize,
+    ) -> Option<TagItem> {
+	let mut new_tagline = String::with_capacity(
+	    self.tag_line.len()
+	);
+	let mut iter_fields = self.fields();
+
+	// process fields prior to field_no
+	for _ in 0..field_no {
+	    let Some(field) = iter_fields.next() else {
+		return None
+	    };
+
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	    new_tagline.push('|');
+	}
+
+	// process field_no
+	if let Some(field) = iter_fields.next() {
+	    let Some(new_field) = field.concat_flags(flags) else {
+		return None
+	    };
+	    new_tagline.push_str(&new_field);
+	} else {
+	    return None
+	}
+
+	// process fields after field_no
+	while let Some(field) = iter_fields.next() {
+	    new_tagline.push('|');
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	}
+
+	new_tagline.shrink_to_fit();
+
+	Some ( TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
+	} )
+    }
+
+    /// Returns a new copy of the `TagItem` with the given flags
+    /// removed, or `None` if the field isn't flags type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | Field Indexing is Zero-based | #hello #world #new #flags"
+    /// ).unwrap();
+    /// let a = a.remove_flags_from_field_no("#hello #new", 2).unwrap();
+    ///
+    /// assert_eq!(
+    ///     Some(vec![
+    ///         "#world".to_string(),
+    ///         "#flags".to_string(),
+    ///     ]),
+    ///     a.flags(),
+    /// );
+    /// ```
+
+    pub fn remove_flags_from_field_no(
+	&self,
+	flags: &str,
+	field_no: usize,
+    ) -> Option<TagItem> {
+	let mut new_tagline = String::with_capacity(
+	    self.tag_line.len()
+	);
+	let mut iter_fields = self.fields();
+
+	// process fields prior to field_no
+	for _ in 0..field_no {
+	    let Some(field) = iter_fields.next() else {
+		return None
+	    };
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	    new_tagline.push('|');
+	}
+
+	// process field_no
+	if let Some(field) = iter_fields.next() {
+	    let Some(new_field) = field.sincat_flags(flags) else {
+		return None
+	    };
+	    new_tagline.push_str(&new_field);
+	} else {
+	    return None
+	}
+
+	// process fields after field_no
+	while let Some(field) = iter_fields.next() {
+	    new_tagline.push('|');
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	}
+
+	new_tagline.shrink_to_fit();
+
+	Some ( TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
+	} )
+    }
+
+    /// Returns a new copy of `TagItem` with the flag inserted.
+    ///
+    /// If the item doesn't have any flags field, a new one will
+    /// appended, otherwise it'll use the last Flag field.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | Already with Flags | #hello #world"
+    /// ).unwrap();
+    /// let a = a.insert_flag("#new");
+    /// let a = a.insert_flag("#flags");
+    ///
+    /// assert_eq!(
+    ///     Some(vec![
+    ///         "#hello".to_string(),
+    ///         "#world".to_string(),
+    ///         "#new".to_string(),
+    ///         "#flags".to_string(),
+    ///     ]),
+    ///     a.flags(),
+    /// );
+    /// ```
+    ///
+    /// ```
+    /// let b = tag::TagItem::try_from(
     ///     "@1.0 | No Prior Flags"
     /// ).unwrap();
-    /// b.add_flags("#you-have-a-flag-now");
+    /// let b = b.insert_flag("#you-have-a-flag-now");
     ///
     /// assert_eq!(
     ///     Some(vec![
@@ -717,29 +829,45 @@ impl TagItem {
     /// );
     /// ```
 
-    pub fn add_flags(&mut self, flags: &str) {
-	let fields = self.fields();
-	for field_no in (0..fields.len()).rev() {
-	    if let TagField::Flags(_) = fields[field_no] {
-		self.add_flags_to_field_no(flags, field_no);
-		return;
+    pub fn insert_flag(
+	&self,
+	flag: &str,
+    ) -> TagItem {
+	if self.has_flag(flag.to_string()) {
+	    return self.clone();
+	}
+
+	for (field_no, field) in self.fields().enumerate() {
+	    let TagField::Flags(_) = field else { continue };
+	    if let Some(item) = self.insert_flags_to_field_no(
+		flag, field_no
+	    ) {
+		return item;
 	    }
 	}
-	self.tag_line.push_str(" | ");
-	self.tag_line.push_str(&flags);
+
+	let mut new_tagline = self.tag_line.clone();
+	new_tagline.push_str(" | ");
+	new_tagline.push_str(flag);
+	new_tagline.shrink_to_fit();
+
+	TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
+	}
     }
 
-    /// Remove flags from the item.
+    /// Returns a new copy of the `TagItem` with the flags removed.
     ///
     /// The removal is done to every flag fields of the item.
     ///
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::try_from(
+    /// let a = tag::TagItem::try_from(
     ///     "@1.0 | Flags | #hello #world"
     /// ).unwrap();
-    /// a.remove_flags("#hello");
+    /// let a = a.remove_flags("#hello");
     ///
     /// assert_eq!(
     ///     Some(vec![
@@ -750,10 +878,10 @@ impl TagItem {
     /// ```
     ///
     /// ```
-    /// let mut b = tag::TagItem::try_from(
+    /// let b = tag::TagItem::try_from(
     ///     "@1.0 | #many | #many #flags | #happy #flags | #cool"
     /// ).unwrap();
-    /// b.remove_flags("#many #happy");
+    /// let b = b.remove_flags("#many #happy");
     ///
     /// assert_eq!(
     ///     Some(vec![
@@ -765,7 +893,10 @@ impl TagItem {
     /// );
     /// ```
 
-    pub fn remove_flags(&mut self, flags: &str) {
+    pub fn remove_flags(
+	&self,
+	flags: &str
+    ) -> TagItem {
 	let mut new_tagline = "".to_string();
 	for field in self.fields() {
 	    let s = match field {
@@ -775,60 +906,57 @@ impl TagItem {
 		TagField::Attribute(s) |
 		TagField::Invalid(s) => s,
 	    };
-
-	    if s.len() > 0 {
-		new_tagline.push_str(s);
-		new_tagline.push_str(" | ");
-	    }
+	    new_tagline.push_str(s);
+	    new_tagline.push('|');
 	}
+	new_tagline.pop();
+	new_tagline.shrink_to_fit();
 
-	'clean_end: loop {
-	    let Some(c) = new_tagline.pop() else {break 'clean_end};
-
-	    if c == ' ' || c == '|' {
-		new_tagline.push(c);
-		break 'clean_end;
-	    }
+	TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
 	}
-
-	self.tag_line = new_tagline;
     }
 
     /// Returns a vector of all the attributes.
     ///
-    /// An attribute is represented with `(Key, value): (<Option<String>, Option<String>>)`.
+    /// An attribute is represented with `(Key, value):
+    /// (<Option<String>, Option<String>>)`.
     ///
     /// # Examples
     ///
     /// ```
-    /// let a = tag::TagItem::try_from("@1.0 | :src: code | :null:").unwrap();
-    ///
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | :src: code | :null:
+    /// ").unwrap();
     /// assert_eq!(
     ///     vec![
-    ///         (Some(":src:".to_string()), Some("code".to_string())),
-    ///         (Some(":null:".to_string()), None),
+    ///         (Some("src".to_string()), Some("code".to_string())),
+    ///         (Some("null".to_string()), None),
     ///     ],
     ///     a.attributes(),
     ///);
     /// ```
     ///
     /// ```
-    /// let b = tag::TagItem::try_from("@1.0 | Item with no attributes").unwrap();
-    ///
+    /// let b = tag::TagItem::try_from(
+    ///     "@1.0 | Item with no attributes"
+    /// ).unwrap();
     /// assert_eq!(
     ///     Vec::<(Option<String>,Option<String>)>::new(),
     ///     b.attributes(),
     /// );
     /// ```
 
-    pub fn attributes(&self) -> Vec<(Option<String>,Option<String>)> {
+    pub fn attributes(
+	&self
+    ) -> Vec<(Option<String>,Option<String>)> {
 	let mut attributes: Vec<(Option<String>, Option<String>)> = Vec::new();
 
 	for field in self.fields() {
-	    match field.attribute_key_value() {
-		Some(attribute_key_value) => attributes.push(attribute_key_value),
-		None => (),
-	    }
+	    let TagField::Attribute(_) = field else {continue};
+	    let Some(attribute) = field.attribute_key_value() else {continue};
+	    attributes.push(attribute);
 	}
 
 	attributes
@@ -843,18 +971,21 @@ impl TagItem {
     /// let a = tag::TagItem::try_from("@1.0 | :src: code").unwrap();
     /// assert_eq!(
     ///     Some((
-    ///         Some(":src:".to_string()),
+    ///         Some("src".to_string()),
     ///         Some("code".to_string()),
     ///     )),
-    ///     a.fetch_attribute(":src:".to_string()),
+    ///     a.fetch_attribute("src"),
     /// );
-    /// assert_eq!(None, a.fetch_attribute(":ABCD:".to_string()));
+    /// assert_eq!(None, a.fetch_attribute("ABCD"));
     /// ```
 
-    pub fn fetch_attribute(&self, key: String) -> Option<(Option<String>,Option<String>)> {
+    pub fn fetch_attribute(
+	&self,
+	key: &str,
+    ) -> Option<(Option<String>, Option<String>)> {
 	for attribute in self.attributes() {
 	    if let Some(ref attribute_key) = attribute.0 {
-		if *attribute_key == key {
+		if attribute_key == key {
 		    return Some(attribute)
 		}
 	    }
@@ -868,11 +999,11 @@ impl TagItem {
     ///
     /// ```
     /// let a = tag::TagItem::try_from("@1.0 | :src: code").unwrap();
-    /// assert!(a.has_attribute(":src:".to_string()));
-    /// assert!(!a.has_attribute(":null:".to_string()));
+    /// assert!(a.has_attribute("src"));
+    /// assert!(!a.has_attribute("null"));
     /// ```
 
-    pub fn has_attribute(&self, key: String) -> bool {
+    pub fn has_attribute(&self, key: &str) -> bool {
 	self.fetch_attribute(key) != None
     }
 
@@ -886,50 +1017,89 @@ impl TagItem {
     /// ```
     /// let a = tag::TagItem::try_from("@1.0 | :src: code | :src: new").unwrap();
     /// assert!(a.match_attribute((
-    ///     Some(":src:".to_string()),
-    ///     Some("code".to_string()),
+    ///     Some("src"),
+    ///     Some("code"),
     /// )));
     /// assert!(!a.match_attribute((
-    ///     Some(":attr:".to_string()),
-    ///     Some("doesn't have".to_string()),
+    ///     Some("attr"),
+    ///     Some("doesn't have"),
     /// )));
     /// assert!(!a.match_attribute((
-    ///     Some(":src:".to_string()),
-    ///     Some("new".to_string()),
+    ///     Some("src"),
+    ///     Some("new"),
     /// )));
     /// ```
 
-    pub fn match_attribute(&self, attribute: (Option<String>, Option<String>)) -> bool {
-	let Some(ref key) = attribute.0 else {
+    pub fn match_attribute(
+	&self,
+	attribute: (Option<&str>, Option<&str>),
+    ) -> bool {
+	let key = match attribute.0 {
+	    Some(k) => k,
+	    None => "",
+	};
+
+	let Some(attribute_to_fetch) = self.fetch_attribute(key) else {
 	    return false;
 	};
-	let Some(attribute_to_fetch) = self.fetch_attribute(key.to_string()) else {
-	    return false;
-	};
+
+	let attribute = (
+	    if let Some(key) = attribute.0 {
+		Some(key.to_string())
+	    } else { None },
+	    if let Some(val) = attribute.1 {
+		Some(val.to_string())
+	    } else { None },
+	);
+
 	attribute_to_fetch == attribute
     }
 
-    /// Sets field's attribute key and value if it's an attribute
-    /// field.
+    /// Returns a new copy of `TagItem` with the attribute (key,
+    /// value) set at field number, or `None` if the given field isn't
+    /// attribute type.
     ///
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
-    /// a.set_attribute_at_field_no((Some(":src:"), Some("tag.rs")), 2);
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | Program source | :src: code"
+    /// ).unwrap();
+    /// let a = a.set_attribute_at_field_no(
+    ///     (Some("src"), Some("tag.rs")), 2
+    /// ).unwrap();
     ///
     /// assert!(a.match_attribute((
-    ///     Some(":src:".to_string()),
-    ///     Some("tag.rs".to_string()),
+    ///     Some("src"),
+    ///     Some("tag.rs"),
     /// )));
     /// ```
+    ///
+    /// ```
+    /// let b = tag::TagItem::try_from(
+    ///     "@1.0 | No Attribute"
+    /// ).unwrap();
+    /// let b = b.set_attribute_at_field_no(
+    ///     (Some("will-it-work"), Some("no")), 1
+    /// );
+    ///
+    /// assert!(b.is_none());
 
-    pub fn set_attribute_at_field_no(&mut self, attribute: (Option<&str>, Option<&str>), field_no: usize) {
-	let fields = self.fields();
-	let TagField::Attribute(_) = fields[field_no] else { return };
-	let mut new_tagline = String::new();
+    pub fn set_attribute_at_field_no (
+	&self,
+	attribute: (Option<&str>, Option<&str>),
+	field_no: usize
+    ) -> Option<TagItem> {
+	let mut iter_fields = self.fields();
+	let mut new_tagline = String::with_capacity(
+	    self.tag_line.len()
+	);
 
-	for field in &fields[ ..field_no] {
+	// fields prior to field_no
+	for _ in 0..field_no {
+	    let Some(field) = iter_fields.next() else {
+		return None
+	    };
 	    match field {
 		TagField::ID(field_str) |
 		TagField::Title(field_str) |
@@ -937,96 +1107,130 @@ impl TagItem {
 		TagField::Attribute(field_str) |
 		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
-	    new_tagline.push_str(" | ");
+	    new_tagline.push('|');
 	}
 
-	if let Some(attribute_key) = attribute.0 {
-	    if attribute_key.as_bytes()[0] != b':' { return };
-	    if attribute_key.as_bytes()[attribute_key.len()-1] != b':' { return };
-	    new_tagline.push_str(attribute_key);
-	} else { return }
+	// field_no field
+	if let Some(field) = iter_fields.next() {
+	    let TagField::Attribute(_) = field else {
+		return None
+	    };
+	    new_tagline.push_str(" :");
+	    if let Some(key) = attribute.0 {
+		new_tagline.push_str(key);
+	    }
+	    new_tagline.push_str(": ");
+	    if let Some(value) = attribute.1 {
+		new_tagline.push_str(value);
+	    }
+	    new_tagline.push(' ');
+	} else {
+	    return None
+	}
 
+	// fields after field_no
+	while let Some(field) = iter_fields.next() {
+	    new_tagline.push('|');
+	    match field {
+		TagField::ID(field_str) |
+		TagField::Title(field_str) |
+		TagField::Flags(field_str) |
+		TagField::Attribute(field_str) |
+		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
+	    }
+	}
+
+	Some ( TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
+	} )
+    }
+
+    /// Returns a new copy of TagItem with the attribute set.
+    ///
+    /// If the old item has an attribute with the given key, it'll
+    /// just change the value of that attribute with the given value,
+    /// otherwise it'll create a new field.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let a = tag::TagItem::try_from(
+    ///     "@1.0 | Program source | :src: code"
+    /// ).unwrap();
+    /// let a = a.set_attribute((Some("src"), Some("tag.rs")));
+    /// let a = a.set_attribute((Some("attr"), Some("value")));
+    ///
+    /// assert!(a.match_attribute((
+    ///     Some("src"),
+    ///     Some("tag.rs"),
+    /// )));
+    /// assert!(a.match_attribute((
+    ///     Some("attr"),
+    ///     Some("value"),
+    /// )));
+    /// ```
+
+    pub fn set_attribute(
+	&self,
+	attribute: (Option<&str>, Option<&str>),
+    ) -> TagItem {
+	let attribute_key = match attribute.0 {
+	    Some(k) => k,
+	    None => "",
+	};
+
+	for (field_no, field) in self.fields().enumerate() {
+	    println!("{:?}", field.attribute_key());
+	    if field.attribute_key() == Some(attribute_key.to_string()) {
+		if let Some(item) = self.set_attribute_at_field_no(
+		    attribute,
+		    field_no,
+		) { return item };
+	    }
+	}
+
+	let mut new_tagline = self.tag_line.clone();
+	new_tagline.push_str(" | :");
+	new_tagline.push_str(attribute_key);
+	new_tagline.push(':');
 	if let Some(attribute_val) = attribute.1 {
-	    new_tagline.push_str(" ");
+	    new_tagline.push(' ');
 	    new_tagline.push_str(attribute_val);
 	}
+	new_tagline.shrink_to_fit();
 
-	for field in &fields[field_no+1.. ] {
-	    new_tagline.push_str(" | ");
-	    match field {
-		TagField::ID(field_str) |
-		TagField::Title(field_str) |
-		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) |
-		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
-	    }
+	TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
 	}
-
-	self.tag_line = new_tagline;
     }
 
-    /// Sets the attribute with the given key.
-    ///
-    /// It'll first look if there's already an attribute with the
-    /// given key. If no attribute is found, it'll insert a new one.
+    /// Returns a new copy of TagItem with the attribute removed.
     ///
     /// # Examples
     ///
     /// ```
-    /// let mut a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
-    /// a.set_attribute((Some(":src:"), Some("tag.rs")));
-    /// a.set_attribute((Some(":attr:"), Some("value")));
-    ///
-    /// assert!(a.match_attribute((
-    ///     Some(":src:".to_string()),
-    ///     Some("tag.rs".to_string()),
-    /// )));
-    /// assert!(a.match_attribute((
-    ///     Some(":attr:".to_string()),
-    ///     Some("value".to_string()),
-    /// )));
-    /// ```
-
-    pub fn set_attribute(&mut self, attribute: (Option<&str>, Option<&str>)) {
-	let Some(attribute_key) = attribute.0 else { return };
-	if attribute_key.as_bytes()[0] != b':' { return };
-	if attribute_key.as_bytes()[attribute_key.len()-1] != b':' { return };
-
-	for field_no in 0..self.fields().len() {
-	    let field = &self.fields()[field_no];
-	    if field.attribute_key() == Some(attribute_key.to_string()) {
-		self.set_attribute_at_field_no(attribute, field_no);
-		return;
-	    }
-	}
-
-	self.tag_line.push_str(" | ");
-	self.tag_line.push_str(attribute_key);
-	if let Some(attribute_val) = attribute.1 {
-	    self.tag_line.push_str(" ");
-	    self.tag_line.push_str(attribute_val);
-	}
-    }
-
-    /// Remove the attribute with the given key.
-    ///
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
+    /// let a = tag::TagItem::try_from("@1.0 | Program source | :src: code").unwrap();
     /// a.remove_attribute(":src:");
     /// a.remove_attribute(":does-not-have-this-one-but-ok");
     ///
-    /// assert!(!a.has_attribute(":src:".to_string()));
+    /// assert!(!a.has_attribute(":src:"));
     /// ```
 
-    pub fn remove_attribute(&mut self, attribute_key: &str) {
-	let mut new_tagline = String::new();
-	let fields = &self.fields();
+    pub fn remove_attribute(
+	&self,
+	attribute_key: &str,
+    ) -> TagItem {
+	let mut new_tagline = String::with_capacity(
+	    self.tag_line.len()
+	);
+	let mut iter_fields = self.fields();
 
-	{
-	    let field = &fields[0];
+	while let Some(field) = iter_fields.next() {
+	    if field.attribute_key() == Some(attribute_key.to_string()) {
+		continue
+	    }
 	    match field {
 		TagField::ID(field_str) |
 		TagField::Title(field_str) |
@@ -1034,21 +1238,16 @@ impl TagItem {
 		TagField::Attribute(field_str) |
 		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
 	    }
+	    new_tagline.push('|');
 	}
 
-	for field in &fields[1.. ] {
-	    if field.attribute_key() == Some(attribute_key.to_string()) { continue }
-	    new_tagline.push_str(" | ");
-	    match field {
-		TagField::ID(field_str) |
-		TagField::Title(field_str) |
-		TagField::Flags(field_str) |
-		TagField::Attribute(field_str) |
-		TagField::Invalid(field_str)  => new_tagline.push_str(field_str),
-	    }
-	}
+	new_tagline.pop();
+	new_tagline.shrink_to_fit();
 
-	self.tag_line = new_tagline;
+	TagItem {
+	    id: self.id.clone(),
+	    tag_line: new_tagline,
+	}
     }
 }
 
