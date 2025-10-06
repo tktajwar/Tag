@@ -86,35 +86,25 @@ Tag marks, sorts, and identifies items with alphanumeric floating point numbers.
 @@4.0
 @end example
 
-@noindent The tag number of an item is permanent. We need permanent identification number so we can easily reference items and not worry about it ever changing.
+@noindent The tag number of an item is permanent. We need permanent
+identification number so we can easily reference items and not worry
+about it ever changing.
 
-Note that a tag can be any positive number that isn't already taken by another item. The tag for the new item could have been any number between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.5}, @samp{@@1.9}, etc. We have infinite possibilities to choose from.
+Note that a tag can be any positive number that isn't already taken by
+another item. The tag for the new item could have been any number
+between @samp{1.0} and @samp{2.0} such as @samp{@@1.01}, @samp{@@1.5},
+@samp{@@1.9}, etc. We have infinite possibilities to choose from.
 
 @node Valid Tag numbers
 @section Valid Tag numbers
 
-Tag numbers are positive alphanumeric base 64 floating-point numbers
-consisting of Latin letters and Arabic numerals with the extension of
-@kbd{-} and @kbd{_} symbols. Tag numbers are represented with an
-@samp{@@} followed by the number. For example, @samp{@@1.0},
-@samp{@@1.1}, @samp{@@1.19}, @samp{@@1.B2}, @samp{@@12.5},
-@samp{@@786.25}, @samp{@@300000000.59}, and @samp{@@0.0000000001} are
-all valid tag numbers. The radix-point character (@kbd{.}) is used to
-separate the whole number from the fraction.
-
-The tag number is alphanumeric which means the tag number is made out of
-both the numbers @kbd{0} through @kbd{9} and the letters @kbd{A} through
-@kbd{Z} and @kbd{a} through @kbd{z} then @kbd{-} and @kbd{_}. After
-@kbd{9} comes @kbd{A}. This is base64url numeral system with a slight
-change in ordering
-@url{https://datatracker.ietf.org/doc/html/rfc4648#section-5}. This is
-chosen so we can express more tags with fewer digits and create more
-meaningful tag numbers. All the digits in base 64 numeral system in
-ascending order:
-
-@verbatim
-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_
-@end verbatim
+Tag numbers are positive decimal numbers used to identify tag items. Tag
+numbers are represented with an @samp{@@} followed by the number. For
+example, @samp{@@1.0}, @samp{@@1.1}, @samp{@@1.19}, @samp{@@1.2},
+@samp{@@12.5}, @samp{@@786.25}, @samp{@@300000000.0}, and
+@samp{@@0.0000000001} are all valid tag numbers. The radix-point
+character (@kbd{.}) is used to separate the whole number from the
+fraction.
 
 @noindent There are a few rules to choosing tag numbers:
 
@@ -127,23 +117,18 @@ A tag number cannot contain anything other than:
 one @kbd{@@} in the beginning
 
 @item
-base64url characters
+decimal digits (@kbd{0} through @kbd{9})
 
 @item
-radix point (@kbd{.})
+one radix point (@kbd{.}) character to separate the whole from the fraction
 @end itemize
-
-@item
-The number must be unique. No two items with the same tag number.
 
 @item
 The number must be greater than zero. @samp{@@0.0} is not a valid tag number.
 
 @item
-The number must be greater than previous item's and smaller than next item's.
+The number must be unique. No two items with the same tag number.
 @end itemize
-
-@noindent A tag number under the hood is implemented with a string mantissa and an integer exponent. This custom data type is chosen over float/double for range and precision.
 
 @node Tag Items
 @chapter Tag Items
@@ -170,10 +155,10 @@ An item in Tag can be given a title. They should be placed right after the tag n
 Flags are words or labels used to convey the quality or features of a Tag item. They must start with the hash (@kbd{#}) symbol followed by the name of the flag. Flags are boolean variables meaning an item either has a specific flag or it does not. They are case-sensitive and multiple of them can reside inside the same component. Flags can be used to label and categorize items:
 
 @example tag
-@@b.83 | "The Raft" by Stephen King   | #books #horror
-@@b.98 | "Red Rising" by Pierce Brown | #books #dystopian
-@@c.21 | Brother (1997)               | #cinema #crime #drama
-@@c.a5 | Seven Samurai (1954)         | #cinema #drama
+@@1.83 | "The Raft" by Stephen King   | #books #horror
+@@1.98 | "Red Rising" by Pierce Brown | #books #dystopian
+@@2.21 | Brother (1997)               | #cinema #crime #drama
+@@2.35 | Seven Samurai (1954)         | #cinema #drama
 @end example
 
 @noindent Some flags have special meaning to the Tag system. For example, an item can have the @code{#ARCHIVED} flag indicates it is now archived and will be ignored by the compiler:
@@ -185,9 +170,9 @@ Flags are words or labels used to convey the quality or features of a Tag item. 
 @noindent Todo flags can be used to turn an item into a todo item. @code{#TODO} and @code{#DONE} are the two basic todo states but more can be used and configured. Examples of items with todo flags:
 
 @example tag
-@@td.01 | Finish Reading about Flags    | #TODO
-@@td.02 | Write about Biggest Overcomes | #DONE
-@@td.31 | Share Tag with others         | #TODO #IMPORTANT
+@@1.01 | Finish Reading about Flags    | #TODO
+@@1.02 | Write about Biggest Overcomes | #DONE
+@@1.31 | Share Tag with others         | #TODO #IMPORTANT
 @end example
 
 @node Item Properties
@@ -196,19 +181,19 @@ Flags are words or labels used to convey the quality or features of a Tag item. 
 Items in Tag can be given named properties. Properties are key-value pairs. The key of the property need to be enclosed inside colon (@kbd{:}) symbols and it should be followed by the value, like @samp{:@var{key}: @var{value}}. Properties can be used to denote named information regarding an item:
 
 @example tag
-@@c.35 | Scarface (1983)           | :director: Brian De Palma | :rating: 4.1
-@@c.39 | 12 Angry Men (1957)       | :director: Sidney Lumet   | :rating: 4.6
-@@c.42 | Memories of Murder (2003) | :director: Bong Joon Ho   | :rating: 4.4
+@@1.35 | Scarface (1983)           | :director: Brian De Palma | :rating: 4.1
+@@1.39 | 12 Angry Men (1957)       | :director: Sidney Lumet   | :rating: 4.6
+@@1.42 | Memories of Murder (2003) | :director: Bong Joon Ho   | :rating: 4.4
 @end example
 
 @noindent Properties can be used to establishs connection between multiple items in a Tag document:
 
 @example tag
-@@3.24 | Life of an Octopus
-@@3.9o | Living in a Garden
-@@3.98 | Octupus's Garden? | :ref: @@3.24 @@3.9o
-@@12.1 | C main function | :dep: @@12.9
-@@12.9 | C helper functions
+@@03.24 | Life of an Octopus
+@@03.9  | Living in a Garden
+@@03.98 | Octupus's Garden? | :ref: @@3.24 @@3.9
+@@12.1  | C main function | :dep: @@12.9
+@@12.9  | C helper functions
 @end example
 
 @noindent Multiple properties must not be declared in a single component. Use one component per property declaration.
