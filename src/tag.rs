@@ -31,21 +31,14 @@ impl TryFrom<&str> for TagID {
     /// ```
 
     fn try_from(tag_number: &str) -> Result<TagID, Self::Error> {
-	let mut start: usize = 0;
-	let mut end: usize = tag_number.len() - 1;
-
-	while let Some(c) = tag_number.as_bytes().get(start) {
-	    if b'0' <= *c && *c <= b'9' { break };
-	    start += 1;
-	}
-	while let Some(c) = tag_number.as_bytes().get(end) {
-	    if b'0' <= *c && *c <= b'9' { break };
-	    if end <= start { break };
-	    end -= 1;
-	}
+	let re = Regex::new(r"^\s*@([0-9]+\.?[0-9]*)\s*$").unwrap();
+	let tag_number = match re.captures(tag_number) {
+	    Some(captures) => captures.get(1).unwrap().as_str(),
+	    None => "",
+	};
 
 	let id = Decimal::from_str_exact(
-	    &tag_number[start..=end]
+	    &tag_number
 	)?.normalize();
 
 	Ok (
