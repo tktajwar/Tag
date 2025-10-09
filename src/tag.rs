@@ -1260,16 +1260,12 @@ impl TryFrom<&str> for TagItem {
     /// ```
 
     fn try_from(tag_line: &str) -> Result<TagItem, Self::Error> {
-	let mut pipe_end = 0;
+	let id_str = match tag_line.split('|').next() {
+	    Some(s) => s,
+	    None => "",
+	};
 
-	while pipe_end < tag_line.len() {
-	    if tag_line.as_bytes()[pipe_end] == b'|' {
-		break;
-	    }
-	    pipe_end += 1;
-	}
-
-	let id = TagID::try_from(&tag_line[0..pipe_end])?;
+	let id = TagID::try_from(id_str)?;
 
 	let tag_line = String::from(tag_line);
 
