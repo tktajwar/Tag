@@ -1,6 +1,28 @@
 use std::fmt;
+use std::sync::LazyLock;
 use regex::Regex;
 use rust_decimal::prelude::*;
+
+static RE_TAG_NUMBER: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(
+	r"^\s*@([0-9]+\.?[0-9]*)\s*$"
+    ).unwrap());
+
+static RE_FLAG: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(
+	r"#[0-9a-zA-Z_\-]+"
+    ).unwrap());
+
+static RE_FLAGS: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(
+	r"^\s*(#[0-9a-zA-Z_\-]+(?:\s*#[0-9a-zA-Z_\-]+)*)\s*$"
+    ).unwrap());
+
+static RE_ATTRIBUTE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(
+	r"^\s*:([0-9a-zA-Z_\-\s]+)?:\s*(.+?)?\s*$"
+    ).unwrap());
+
 
 #[derive(PartialEq, PartialOrd, Eq, Clone, Debug)]
 pub struct TagID {
@@ -31,8 +53,7 @@ impl TryFrom<&str> for TagID {
     /// ```
 
     fn try_from(tag_number: &str) -> Result<TagID, Self::Error> {
-	let re = Regex::new(r"^\s*@([0-9]+\.?[0-9]*)\s*$").unwrap();
-	let tag_number = match re.captures(tag_number) {
+	let tag_number = match RE_TAG_NUMBER.captures(tag_number) {
 	    Some(captures) => captures.get(1).unwrap().as_str(),
 	    None => "",
 	};
@@ -168,30 +189,21 @@ impl <'a>TagField<'a> {
 
 	match first_byte {
 	    b'@' => {
-		let re = Regex::new(
-		    r"^\s*@[0-9]+[0-9\.]*\s*$"
-		).unwrap();
-		if re.is_match(field_str) {
+		if RE_TAG_NUMBER.is_match(field_str) {
 		    TagField::ID(field_str)
 		} else {
 		    TagField::Title(field_str)
 		}
 	    },
 	    b'#' => {
-		let re = Regex::new(
-		    r"^\s*#[0-9a-zA-Z_\-]+(\s*#[0-9a-zA-Z_\-]+)*\s*$"
-		).unwrap();
-		if re.is_match(field_str) {
+		if RE_FLAGS.is_match(field_str) {
 		    TagField::Flags(field_str)
 		} else {
 		    TagField::Invalid(field_str)
 		}
 	    },
 	    b':' => {
-		let re = Regex::new(
-		    r"^\s*:[0-9a-zA-Z_\-\s]+:[0-9a-zA-Z_\-\.\,\s]*\s*$"
-		).unwrap();
-		if re.is_match(field_str) {
+		if RE_ATTRIBUTE.is_match(field_str) {
 		    TagField::Attribute(field_str)
 		} else {
 		    TagField::Invalid(field_str)
@@ -224,9 +236,8 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn flags(&self) -> Option<Vec<String>> {
-	let re = Regex::new(r"#[0-9a-zA-Z_\-]+").unwrap();
 	match self {
-	    TagField::Flags(field_str) => Some(re.find_iter(field_str)
+	    TagField::Flags(field_str) => Some(RE_FLAG.find_iter(field_str)
 					       .map(|m| m.as_str().to_string())
 					       .collect()),
 	    _ => None,
@@ -257,11 +268,7 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn concat_flags(&self, flags: &str) -> Option<String> {
-	let re = Regex::new(
-	    r"^#[0-9a-zA-Z_\-]+(\s*#[0-9a-zA-Z_\-]+)*$"
-	).unwrap();
-
-	let Some(flags) = re.find(flags) else {
+	let Some(flags) = RE_FLAGS.find(flags) else {
 	    return None;
 	};
 	let con_flags = flags.as_str();
@@ -295,8 +302,7 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn sincat_flags(&self, flags: &str) -> Option<String> {
-	let re = Regex::new(r"(#[0-9a-zA-Z_\-]+)").unwrap();
-	let sin_flags: Vec<String> = re.find_iter(&flags)
+	let sin_flags: Vec<String> = RE_FLAG.find_iter(&flags)
 	    .map(|m| m.as_str().to_string())
 	    .collect();
 
@@ -337,10 +343,9 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn attribute_key(&self) -> Option<String> {
-	let re = Regex::new(r"^\s*:([0-9a-zA-Z_\-\s]+):").unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
-		let Some(captures) = re.captures(field_str) else {
+		let Some(captures) = RE_ATTRIBUTE.captures(field_str) else {
 		    return None
 		};
 		if let Some(key) = captures.get(1) {
@@ -374,13 +379,12 @@ impl <'a>TagField<'a> {
     /// ```
 
     pub fn attribute_value(&self) -> Option<String> {
-	let re = Regex::new(r"^:[0-9a-zA-Z_\-]+:\s*([0-9a-zA-Z_\-\.\,\s]+$)").unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
-		let Some(captures) = re.captures(field_str) else {
+		let Some(captures) = RE_ATTRIBUTE.captures(field_str) else {
 		    return None
 		};
-		if let Some(value) = captures.get(1) {
+		if let Some(value) = captures.get(2) {
 		    Some(value.as_str().to_string())
 		} else {
 		    None
@@ -425,12 +429,9 @@ impl <'a>TagField<'a> {
     pub fn attribute_key_value(
 	&self
     ) -> Option<(Option<String>, Option<String>)> {
-	let re = Regex::new(
-	    r"^\s*:([0-9a-zA-Z_\-]+):\s*([0-9a-zA-Z_\-\.\,\s]+?)?\s*$"
-	).unwrap();
 	match self {
 	    TagField::Attribute(field_str) => {
-		let Some(captures) = re.captures(field_str) else {
+		let Some(captures) = RE_ATTRIBUTE.captures(field_str) else {
 		    return None
 		};
 		Some((
