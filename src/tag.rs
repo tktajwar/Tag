@@ -20,7 +20,7 @@ static RE_FLAGS: LazyLock<Regex> =
 
 static RE_ATTRIBUTE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(
-	r"^\s*:([0-9a-zA-Z_\-\s]+)?:\s*(.+?)?\s*$"
+	r"^\s*:(.+?)?:\s*(.+?)?\s*$"
     ).unwrap());
 
 
