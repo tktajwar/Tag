@@ -16,6 +16,16 @@ pub struct PlainTag {
 }
 
 impl PlainTag {
+
+    /// Returns an iterator over the tag items of the tag file.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let mut tag_items = ptag.items();
+    /// ```
+
     pub fn items(&self) -> PTagIterator {
 	PTagIterator {
 	    iter: str::from_utf8(&self.tagfile[..]).unwrap().split('\n')
