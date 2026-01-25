@@ -1,4 +1,5 @@
 use crate::TagItem;
+use crate::TagID;
 
 use regex::Regex;
 use std::sync::LazyLock;
@@ -19,6 +20,16 @@ impl PlainTag {
 	PTagIterator {
 	    iter: str::from_utf8(&self.tagfile[..]).unwrap().split('\n')
 	}
+    }
+
+    pub fn linear_search(&self, id: TagID) -> Option<TagItem> {
+	for item in self.items() {
+	    let Ok(item) = item else {continue};
+	    if item.id == id {
+		return Some(item);
+	    }
+	}
+	None
     }
 }
 

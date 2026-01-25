@@ -471,7 +471,7 @@ impl <'a>Iterator for FieldsIterator<'a> {
 
 #[derive(Clone)]
 pub struct TagItem {
-    id: TagID,
+    pub id: TagID,
     tag_line: String,
 }
 
