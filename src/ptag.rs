@@ -32,6 +32,17 @@ impl PlainTag {
 	}
     }
 
+    /// Returns the tag item with the given tag ID after performing a
+    /// linear search, or `None` if it's not found.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let id = tag::TagID::try_from("@1.0").unwrap();
+    /// let a = ptag.linear_search(id);
+    /// ```
+
     pub fn linear_search(&self, id: TagID) -> Option<TagItem> {
 	for item in self.items() {
 	    let Ok(item) = item else {continue};
