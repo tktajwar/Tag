@@ -24,7 +24,7 @@ static RE_ATTRIBUTE: LazyLock<Regex> =
     ).unwrap());
 
 
-#[derive(PartialEq, PartialOrd, Eq, Clone, Debug)]
+#[derive(PartialEq, PartialOrd, Eq, Clone, Debug, Copy)]
 pub struct TagID {
     id: Decimal,
 }
