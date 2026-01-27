@@ -5,6 +5,7 @@ use regex::Regex;
 use std::sync::LazyLock;
 use std::fs::File;
 use memmap2::Mmap;
+use std::error::Error;
 
 static RE_TAG_ITEM: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(
@@ -55,7 +56,7 @@ impl PlainTag {
 }
 
 impl TryFrom<&str> for PlainTag {
-    type Error = Box<dyn std::error::Error>;
+    type Error = Box<dyn Error>;
 
     /// Returns a PlainTag from given file path.
     ///
