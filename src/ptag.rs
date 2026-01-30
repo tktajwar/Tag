@@ -6,6 +6,7 @@ use std::sync::LazyLock;
 use std::fs::File;
 use memmap2::Mmap;
 use std::error::Error;
+use std::cmp::max;
 
 static RE_TAG_ITEM: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(
@@ -75,7 +76,7 @@ impl PlainTag {
 	&self,
 	id: TagID
     ) -> Result<TagItem, Box<dyn Error>> {
-	let mut s = 0;
+	let mut s = self.list_start;
 	let mut e = self.tagfile.len() as usize - 1;
 
 	while s <= e {
@@ -102,7 +103,7 @@ impl PlainTag {
     ) -> (usize, usize) {
 	let mut s = position;
 
-	while s > 0 {
+	while s > self.list_start {
 	    if self.tagfile[s] == b'@' && self.tagfile[s-1] == b'\n' {
 		match self.tagfile[s+1] {
 		    b'0'..=b'9' => {break;},
@@ -114,7 +115,7 @@ impl PlainTag {
 
 	let mut e = s;
 
-	while e < self.tagfile.len() - 1 {
+	while e < self.tagfile.len() {
 	    if self.tagfile[e] == b'\n' {
 		break;
 	    }
