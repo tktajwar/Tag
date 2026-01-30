@@ -14,6 +14,7 @@ static RE_TAG_ITEM: LazyLock<Regex> =
 
 pub struct PlainTag {
     tagfile: Mmap,
+    list_start: usize,
 }
 
 impl PlainTag {
@@ -29,7 +30,10 @@ impl PlainTag {
 
     pub fn items(&self) -> PTagIterator {
 	PTagIterator {
-	    iter: str::from_utf8(&self.tagfile[..]).unwrap().split('\n')
+	    iter: str::from_utf8(
+		&self.tagfile[self.list_start..])
+		.unwrap()
+		.split('\n')
 	}
     }
 
@@ -80,9 +84,9 @@ impl PlainTag {
 	    let m_item = self.item_at(start, end)?;
 	    let m_id = m_item.id;
 
-	    if m_id < id {
-		s = end + 1;
-	    } else if m_id > id {
+	    if id > m_id {
+		s = max(end, m) + 1;
+	    } else if id < m_id {
 		e = start - 1;
 	    } else {
 		return Ok(m_item);
@@ -97,14 +101,18 @@ impl PlainTag {
 	position: usize,
     ) -> (usize, usize) {
 	let mut s = position;
-	let mut e = position;
 
 	while s > 0 {
 	    if self.tagfile[s] == b'@' && self.tagfile[s-1] == b'\n' {
-		break;
+		match self.tagfile[s+1] {
+		    b'0'..=b'9' => {break;},
+		    _ => (),
+		}
 	    }
 	    s -= 1;
 	}
+
+	let mut e = s;
 
 	while e < self.tagfile.len() - 1 {
 	    if self.tagfile[e] == b'\n' {
@@ -121,7 +129,6 @@ impl PlainTag {
 	line_start: usize,
 	line_end: usize,
     ) -> Result<TagItem, Box<dyn Error>> {
-	println!("{}, {}", line_start, line_end);
 	let line = std::str::from_utf8(
 	    &self.tagfile[line_start..line_end]
 	)?;
@@ -150,7 +157,23 @@ impl TryFrom<&str> for PlainTag {
 	let tagfile = File::open(filepath)?;
 	let tagfile = unsafe { Mmap::map(&tagfile)? };
 
-	Ok( PlainTag { tagfile } )
+	let mut list_start = 0;
+
+	while list_start < tagfile.len() - 1 {
+	    if tagfile[list_start] == b'@' {
+		match tagfile[list_start + 1] {
+		    b'0'..=b'9' => break,
+		    _ => (),
+		}
+	    }
+
+	    list_start += 1;
+	}
+
+	Ok( PlainTag {
+	    tagfile,
+	    list_start,
+	} )
     }
 }
 
