@@ -113,11 +113,11 @@ Set the attribute of the item.
 
 Remove the attribute of the item.
 
-* TODO TagList [0/8]
+* TODO TagList [2/8]
 
 A structure to hold multiple tag items. Should provide fast single and sequential look-ups of given tag ID(s). Also, provide fast querying of items that have certain flags and/or attribute.
 
-** TODO TagList struct
+** DONE TagList struct
 
 Structure for tag list.
 
@@ -125,7 +125,7 @@ Structure for tag list.
 
 Insert an item to the tag list.
 
-** TODO TagList access(TagID) fn
+** DONE TagList access(TagID) fn
 
 Check/access a tag item.
 
@@ -149,11 +149,11 @@ Exclude all the tag items in the list that has attribute set to the given flag.
 
 Modify an item in the list.
 
-* TODO File I/O [0/4]
+* TODO File I/O [1/4]
 
 Handling Tagfile.
 
-** TODO Read a Tagfile
+** DONE Read a Tagfile
 
 Read TagList from the disk.
 
