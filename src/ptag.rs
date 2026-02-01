@@ -29,12 +29,17 @@ impl PlainTag {
     /// let mut tag_items = ptag.items();
     /// ```
 
-    pub fn items(&self) -> PTagIterator {
-	PTagIterator {
-	    iter: str::from_utf8(
-		&self.tagfile[self.list_start..])
-		.unwrap()
-		.split('\n')
+    pub fn items(&self) -> PTagIteratorConstrained {
+	PTagIteratorConstrained {
+	    iter: PTagIteratorType::NonConstrained(
+		Box::new(PTagIterator {
+		    iter: str::from_utf8(
+			&self.tagfile[self.list_start..])
+			.unwrap()
+			.split('\n')
+		})
+	    ),
+	    constraint: PTagIteratorConstraint::None,
 	}
     }
 
@@ -201,3 +206,54 @@ impl <'a>Iterator for PTagIterator<'a> {
     }
 }
 
+enum PTagIteratorConstraint {
+    None,
+    Until(TagID),
+    Upto(TagID),
+}
+
+impl PTagIteratorConstraint {
+    fn match_item(&self, item: &TagItem) -> bool {
+	match self {
+	    PTagIteratorConstraint::None => true,
+	    PTagIteratorConstraint::Until(id) => item.id < *id,
+	    PTagIteratorConstraint::Upto(id) => item.id <= *id,
+	}
+    }
+}
+
+enum PTagIteratorType<'a> {
+    NonConstrained(Box<PTagIterator<'a>>),
+    Constrained(Box<PTagIteratorConstrained<'a>>),
+}
+
+pub struct PTagIteratorConstrained<'a> {
+    iter: PTagIteratorType<'a>,
+    constraint: PTagIteratorConstraint,
+}
+
+impl <'a>Iterator for PTagIteratorConstrained<'a> {
+    type Item = TagItem;
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+	loop {
+	    let Some(item) = (match &mut self.iter {
+		PTagIteratorType::NonConstrained(iter) => iter.next(),
+		PTagIteratorType::Constrained(iter) => iter.next(),
+	    }) else {
+		return None
+	    };
+
+	    if self.constraint.match_item(&item) {
+		return Some(item)
+	    } else {
+		match self.constraint {
+		    PTagIteratorConstraint::Until(_) |
+		    PTagIteratorConstraint::Upto(_) => return None,
+		    _ => ()
+		};
+	    }
+	}
+    }
+}
