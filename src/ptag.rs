@@ -51,7 +51,6 @@ impl PlainTag {
 
     pub fn linear_search(&self, id: TagID) -> Option<TagItem> {
 	for item in self.items() {
-	    let Ok(item) = item else {continue};
 	    if item.id == id {
 		return Some(item);
 	    }
@@ -183,13 +182,16 @@ pub struct PTagIterator<'a> {
 }
 
 impl <'a>Iterator for PTagIterator<'a> {
-    type Item = Result<TagItem, rust_decimal::Error>;
+    type Item = TagItem;
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
 	if let Some(s) = self.iter.next() {
 	    if RE_TAG_ITEM.is_match(s) {
-		Some(TagItem::try_from(s))
+		match TagItem::try_from(s)  {
+		    Ok(item) => Some(item),
+		    _ => return self.next(),
+		}
 	    } else {
 		self.next()
 	    }
@@ -198,3 +200,4 @@ impl <'a>Iterator for PTagIterator<'a> {
 	}
     }
 }
+
