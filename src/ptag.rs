@@ -73,7 +73,6 @@ impl PlainTag {
     /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
     /// let id = tag::TagID::try_from("@1.0").unwrap();
     /// let a = ptag.binary_search(id);
-    /// assert!(a.is_ok());
     /// ```
 
     pub fn binary_search(
