@@ -231,6 +231,53 @@ pub struct PTagIteratorConstrained<'a> {
     constraint: PTagIteratorConstraint,
 }
 
+impl<'a> PTagIteratorConstrained<'a> {
+
+    /// Returns an iterator over the given current iterator with the
+    /// constraint of iterating until the given ID.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let mut tag_items = ptag.items().until(
+    ///     tag::TagID::try_from("@1000.0")
+    ///         .expect("Failed to build tag ID")
+    /// );
+    /// ```
+
+    pub fn until(self, id: TagID) -> PTagIteratorConstrained<'a> {
+	PTagIteratorConstrained {
+	    iter: PTagIteratorType::Constrained(
+		Box::new(self)
+	    ),
+	    constraint: PTagIteratorConstraint::Until(id),
+	}
+    }
+
+    /// Returns an iterator over the given current iterator with the
+    /// constraint of iterating upto the given ID.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let mut tag_items = ptag.items().upto(
+    ///     tag::TagID::try_from("@1000.0")
+    ///         .expect("Failed to build tag ID")
+    /// );
+    /// ```
+
+    pub fn upto(self, id: TagID) -> PTagIteratorConstrained<'a> {
+	PTagIteratorConstrained {
+	    iter: PTagIteratorType::Constrained(
+		Box::new(self)
+	    ),
+	    constraint: PTagIteratorConstraint::Upto(id),
+	}
+    }
+}
+
 impl <'a>Iterator for PTagIteratorConstrained<'a> {
     type Item = TagItem;
 
