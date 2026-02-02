@@ -192,17 +192,19 @@ impl <'a>Iterator for PTagIterator<'a> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-	if let Some(s) = self.iter.next() {
-	    if RE_TAG_ITEM.is_match(s) {
-		match TagItem::try_from(s)  {
-		    Ok(item) => Some(item),
-		    _ => return self.next(),
+	loop {
+	    if let Some(s) = self.iter.next() {
+		if RE_TAG_ITEM.is_match(s) {
+		    match TagItem::try_from(s)  {
+			Ok(item) => return Some(item),
+			_ => continue,
+		    }
+		} else {
+		    continue;
 		}
 	    } else {
-		self.next()
+		return None;
 	    }
-	} else {
-	    None
 	}
     }
 }
