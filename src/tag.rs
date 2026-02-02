@@ -520,7 +520,7 @@ impl TagItem {
     /// assert_eq!(None, fields_iter.next());
     /// ```
 
-    pub fn fields(&self) -> FieldsIterator {
+    pub fn fields(&self) -> FieldsIterator<'_> {
 	FieldsIterator {
 	    iter: self.tag_line.split('|'),
 	}

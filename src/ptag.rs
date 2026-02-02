@@ -31,7 +31,7 @@ impl PlainTag {
     /// let mut tag_items = ptag.items();
     /// ```
 
-    pub fn items(&self) -> PTagIteratorConstrained {
+    pub fn items(&self) -> PTagIteratorConstrained<'_> {
 	PTagIteratorConstrained {
 	    iter: PTagIteratorType::NonConstrained(
 		Box::new(PTagIterator {
