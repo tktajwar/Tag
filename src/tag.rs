@@ -577,16 +577,16 @@ impl TagItem {
     ///      :invalid | #valid-flag | #inva!!lid"
     /// ).unwrap();
     ///
-    /// assert!(!(a.has_flag("#test".to_string())));
+    /// assert!(!(a.has_flag(&"#test".to_string())));
     ///
     /// let b = tag::TagItem::try_from("@1.0 | Item with no flags").unwrap();
     ///
-    /// assert!(!(b.has_flag("#hello".to_string())));
+    /// assert!(!(b.has_flag(&"#hello".to_string())));
     /// ```
 
-    pub fn has_flag(&self, flag: String) -> bool {
+    pub fn has_flag(&self, flag: &String) -> bool {
 	if let Some(flags) = self.flags() {
-	    flags.contains(&flag)
+	    flags.contains(flag)
 	} else {
 	    false
 	}
@@ -615,7 +615,7 @@ impl TagItem {
 
     pub fn has_flags(&self, flags: Vec<String>) -> bool {
 	for flag in flags {
-	    if !(self.has_flag(flag)) {
+	    if !(self.has_flag(&flag)) {
 		return false;
 	    }
 	}
@@ -827,7 +827,7 @@ impl TagItem {
 	&self,
 	flag: &str,
     ) -> TagItem {
-	if self.has_flag(flag.to_string()) {
+	if self.has_flag(&flag.to_string()) {
 	    return self.clone();
 	}
 

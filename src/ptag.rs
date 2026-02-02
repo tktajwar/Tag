@@ -1,5 +1,7 @@
-use crate::TagItem;
-use crate::TagID;
+use crate::{
+    TagItem,
+    TagID,
+};
 
 use regex::Regex;
 use std::sync::LazyLock;
@@ -209,6 +211,8 @@ enum PTagIteratorConstraint {
     None,
     Until(TagID),
     Upto(TagID),
+    WithFlag(String),
+    WithoutFlag(String),
 }
 
 impl PTagIteratorConstraint {
@@ -217,6 +221,8 @@ impl PTagIteratorConstraint {
 	    PTagIteratorConstraint::None => true,
 	    PTagIteratorConstraint::Until(id) => item.id < *id,
 	    PTagIteratorConstraint::Upto(id) => item.id <= *id,
+	    PTagIteratorConstraint::WithFlag(flag) => item.has_flag(flag),
+	    PTagIteratorConstraint::WithoutFlag(flag) => !item.has_flag(flag),
 	}
     }
 }
@@ -274,6 +280,48 @@ impl<'a> PTagIteratorConstrained<'a> {
 		Box::new(self)
 	    ),
 	    constraint: PTagIteratorConstraint::Upto(id),
+	}
+    }
+
+    /// Returns an iterator over the given iterator with the
+    /// constraint of only returning items that contain the given
+    /// flag.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let mut tag_items = ptag.items()
+    ///     .with_flag("#TODO".to_string());
+    /// ```
+
+    pub fn with_flag(self, flag: String) -> PTagIteratorConstrained<'a> {
+	PTagIteratorConstrained {
+	    iter: PTagIteratorType::Constrained(
+		Box::new(self)
+	    ),
+	    constraint: PTagIteratorConstraint::WithFlag(flag),
+	}
+    }
+
+    /// Returns an iterator over the given iterator with the
+    /// constraint of only returning items that do not contain the
+    /// given flag.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let mut tag_items = ptag.items()
+    ///     .without_flag("#DONE".to_string());
+    /// ```
+
+    pub fn without_flag(self, flag: String) -> PTagIteratorConstrained<'a> {
+	PTagIteratorConstrained {
+	    iter: PTagIteratorType::Constrained(
+		Box::new(self)
+	    ),
+	    constraint: PTagIteratorConstraint::WithoutFlag(flag),
 	}
     }
 }

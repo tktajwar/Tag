@@ -113,7 +113,7 @@ Set the attribute of the item.
 
 Remove the attribute of the item.
 
-* TODO TagList [2/8]
+* TODO TagList [4/8]
 
 A structure to hold multiple tag items. Should provide fast single and sequential look-ups of given tag ID(s). Also, provide fast querying of items that have certain flags and/or attribute.
 
@@ -129,7 +129,7 @@ Insert an item to the tag list.
 
 Check/access a tag item.
 
-** TODO TagList where_flag(flag) fn
+** DONE TagList where_flag(flag) fn
 
 Return an iterator of all the tag items in the list that has the given flag.
 
@@ -137,7 +137,7 @@ Return an iterator of all the tag items in the list that has the given flag.
 
 Return an iterator of all the tag items in the list that has attribute set to the given flag.
 
-** TODO TagList exclude_flag(flag) fn
+** DONE TagList exclude_flag(flag) fn
 
 Exclude all the tag items in the list that has the given flag.
 
