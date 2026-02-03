@@ -192,20 +192,18 @@ impl <'a>Iterator for PTagIterator<'a> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-	loop {
-	    if let Some(s) = self.iter.next() {
-		if RE_TAG_ITEM.is_match(s) {
-		    match TagItem::try_from(s)  {
-			Ok(item) => return Some(item),
-			_ => continue,
-		    }
-		} else {
-		    continue;
+	for s in &mut self.iter {
+	    if RE_TAG_ITEM.is_match(s) {
+		match TagItem::try_from(s)  {
+		    Ok(item) => return Some(item),
+		    _ => continue,
 		}
 	    } else {
-		return None;
+		continue;
 	    }
 	}
+
+	return None;
     }
 }
 
@@ -365,14 +363,10 @@ impl <'a>Iterator for PTagIteratorConstrained<'a> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-	loop {
-	    let Some(item) = (match &mut self.iter {
-		PTagIteratorType::NonConstrained(iter) => iter.next(),
-		PTagIteratorType::Constrained(iter) => iter.next(),
-	    }) else {
-		return None
-	    };
-
+	while let Some(item) = match &mut self.iter {
+	    PTagIteratorType::NonConstrained(iter) => iter.next(),
+	    PTagIteratorType::Constrained(iter) => iter.next(),
+	} {
 	    if self.constraint.match_item(&item) {
 		return Some(item)
 	    } else {
@@ -383,5 +377,7 @@ impl <'a>Iterator for PTagIteratorConstrained<'a> {
 		};
 	    }
 	}
+
+	return None;
     }
 }
