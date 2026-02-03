@@ -215,6 +215,7 @@ enum PTagIteratorConstraint {
     Upto(TagID),
     WithFlag(String),
     WithoutFlag(String),
+    MatchAttribute(Option<String>, Option<String>),
 }
 
 impl PTagIteratorConstraint {
@@ -225,6 +226,9 @@ impl PTagIteratorConstraint {
 	    PTagIteratorConstraint::Upto(id) => item.id <= *id,
 	    PTagIteratorConstraint::WithFlag(flag) => item.has_flag(flag),
 	    PTagIteratorConstraint::WithoutFlag(flag) => !item.has_flag(flag),
+	    PTagIteratorConstraint::MatchAttribute(key, value) => {
+		item.match_attribute((key.as_deref(), value.as_deref()))
+	    },
 	}
     }
 }
@@ -324,6 +328,34 @@ impl<'a> PTagIteratorConstrained<'a> {
 		Box::new(self)
 	    ),
 	    constraint: PTagIteratorConstraint::WithoutFlag(flag),
+	}
+    }
+
+    /// Returns an iterator over the given iterator with the
+    /// constraint of only returning items that has an attribute that
+    /// match the given key and value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ptag = tag::PlainTag::try_from("Tagfile").unwrap();
+    /// let mut tag_items = ptag.items()
+    ///     .match_attribute(
+    ///         Some("file-type".to_string()),
+    ///         Some("png".to_string()),
+    ///     );
+    /// ```
+
+    pub fn match_attribute(
+	self,
+	key: Option<String>,
+	value: Option<String>,
+    ) -> PTagIteratorConstrained<'a> {
+	PTagIteratorConstrained {
+	    iter: PTagIteratorType::Constrained(
+		Box::new(self)
+	    ),
+	    constraint: PTagIteratorConstraint::MatchAttribute(key, value),
 	}
     }
 }
